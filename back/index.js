@@ -2,11 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const sequelize = require("./db/db");
 const cors = require("cors");
+const router = require('./routes/index');
 
 const PORT = process.env.PORT || 5000; //настройка порта
 const app = express(); //вызов сервера
 
 app.use(cors());
+app.use('/api',router);
 
 const start = async () => {
     try{

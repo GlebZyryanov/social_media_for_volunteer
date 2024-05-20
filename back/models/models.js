@@ -1,8 +1,10 @@
 const sequelize = require("../db/db");
 const { DataTypes } = require("sequelize");
 
+//поля create_date и registered_date не нужны тк seuqelize добавляет поля createdAt и updatedAt по умолчанию
+
 // Модель User
-const User = sequelize.define("User", {
+const User = sequelize.define("user", {
   user_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -32,23 +34,20 @@ const User = sequelize.define("User", {
     type: Sequelize.STRING,
   },
   role: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  registered_date: {
-    type: Sequelize.DATE,
-    allowNull: false,
+    type: DataTypes.ENUM("ADMIN", "USER"),
+    defaultValue: "USER",
   },
   image_path: {
     type: Sequelize.STRING,
   },
   isActive: {
     type: Sequelize.BOOLEAN,
+    defaultValue: false,
   },
 });
 
 // Модель Event
-const Event = sequelize.define("Event", {
+const Event = sequelize.define("event", {
   event_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -82,7 +81,7 @@ const Event = sequelize.define("Event", {
 });
 
 // Модель Type_Event
-const TypeEvent = sequelize.define("Type_Event", {
+const TypeEvent = sequelize.define("type_event", {
   type_event_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -95,20 +94,16 @@ const TypeEvent = sequelize.define("Type_Event", {
 });
 
 // Модель Attendance
-const Attendance = sequelize.define("Attendance", {
+const Attendance = sequelize.define("attendance", {
   attendance_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  create_date: {
-    type: Sequelize.DATE,
-    allowNull: false,
-  },
 });
 
 // Модель Notifications
-const Notifications = sequelize.define("Notifications", {
+const Notifications = sequelize.define("notifications", {
   notification_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -117,17 +112,10 @@ const Notifications = sequelize.define("Notifications", {
   message: {
     type: Sequelize.TEXT,
   },
-  status: {
-    type: Sequelize.BOOLEAN,
-  },
-  time: {
-    type: Sequelize.TIME,
-    allowNull: false,
-  },
 });
 
 // Модель Message
-const Message = sequelize.define("Message", {
+const Message = sequelize.define("message", {
   message_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -137,23 +125,10 @@ const Message = sequelize.define("Message", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  create_date: {
-    type: Sequelize.DATE,
-    allowNull: false,
-  },
 });
 
-// Модель Message_target
-const MessageTarget = sequelize.define("Message_target", {
-  message_target_id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-});
-
-// Модель EventChat
-const EventChat = sequelize.define("EventChat", {
+// Модель Chat
+const Chat = sequelize.define("chat", {
   event_chat_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -162,45 +137,54 @@ const EventChat = sequelize.define("EventChat", {
   name: {
     type: Sequelize.STRING,
   },
-  create_date: {
-    type: Sequelize.DATE,
+  chat_type: {
+    type: DataTypes.ENUM("PRIVATE", "GROUP"),
     allowNull: false,
   },
 });
 
-// Модель User_EventChat
-const UserEventChat = sequelize.define("User_EventChat", {
-  user_event_chat_id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  create_date: {
-    type: Sequelize.DATE,
-    allowNull: false,
-  },
+const ChatUsers = sequelize.define("chat_users", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
 // Определение связей
-User.belongsToMany(Event, { through: "Attendance", foreignKey: "user_id" });
-Event.belongsToMany(User, { through: "Attendance", foreignKey: "event_id" });
-
-User.hasMany(Notifications, { foreignKey: "user_id" });
-Event.hasMany(Notifications, { foreignKey: "event_id" });
-
-User.belongsToMany(EventChat, {
-  through: "User_EventChat",
+User.belongsToMany(Event, {
+  through: Attendance,
   foreignKey: "user_id",
+  otherKey: "event_id",
 });
-EventChat.belongsToMany(User, {
-  through: "User_EventChat",
-  foreignKey: "event_chat_id",
+Event.belongsToMany(User, {
+  through: Attendance,
+  foreignKey: "event_id",
+  otherKey: "user_id",
 });
 
-User.hasMany(Message, { foreignKey: "user_id" });
-Message.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(Notifications);
+Notifications.belongsTo(User);
 
-Message.hasMany(MessageTarget, { foreignKey: "message_id" });
-User.hasMany(MessageTarget, { foreignKey: "user_id" });
+Event.hasMany(Notifications); //целесообразность этой связи следует проверить позже
+Notifications.belongsTo(Event);
 
-UserEventChat.hasMany(MessageTarget, { foreignKey: "user_event_chat_id" });
+TypeEvent.hasMany(Event);
+Event.belongsTo(TypeEvent);
+
+User.belongsToMany(Chat, {through: ChatUsers}); //когда юзер участник
+Chat.belongsToMany(User, {through: ChatUsers});
+
+User.hasMany(Message);
+Message.belongsTo(User);
+
+User.hasMany(Chat); //когда юзер создатель чата
+Chat.belongsTo(User);
+
+Chat.hasMany(Message);
+Message.belongsTo(Chat);
+
+module.exports = {
+  User,
+  Event,
+  TypeEvent,
+  Chat,
+  ChatUsers,
+  Message,
+};
