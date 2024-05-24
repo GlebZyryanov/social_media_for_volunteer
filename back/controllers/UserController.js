@@ -1,6 +1,6 @@
 class UserController{
     async register(req, res){
-
+       
     }
 
     async login(req, res){
@@ -8,7 +8,7 @@ class UserController{
     }
 
     async verify_user(req, res){
-
+        res.json('супер контроллер проверки роли');
     }
 
     async getAllUsers(req, res){
@@ -31,10 +31,13 @@ class UserController{
 
     }
 
-    async changeUserRole(req, res){
+    async getUserByIDAdmin(req, res){
 
     }
 
+    async upgradeRole(req, res){
+
+    }
 }
 
 module.exports = new UserController();
