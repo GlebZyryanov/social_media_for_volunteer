@@ -17,11 +17,11 @@ class UserController {
       });
 
       const token = jwt.sign({ id: user.user_id }, process.env.SECRET_KEY, {
-        expiresIn: null,
+        expiresIn: "8000h",
       });
       return res.json({ token, user });
     } catch (error) {
-      next(ApiError.internal(error.message)); // Возникла внутренняя ошибка сервера
+      next(ApiError.internal("Failed to register")); // Возникла внутренняя ошибка сервера
     }
   }
 
@@ -43,7 +43,7 @@ class UserController {
       });
       return res.json({ token, user });
     } catch (error) {
-      next(ApiError.internal(error.message));
+      next(ApiError.internal("Failed to login"));
     }
   }
 

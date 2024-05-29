@@ -4,6 +4,7 @@ const {
   Chat,
   ChatUsers,
   Attendance,
+  TypeEvent,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 
@@ -19,7 +20,8 @@ class EventsController {
 
   async getEventByID(req, res, next) {
     try {
-      const event = await Event.findByPk(req.params.eventID);
+    const { eventID } = req.params;
+      const event = await Event.findByPk(eventID);
       if (event) {
         res.json(event);
       } else {
@@ -31,8 +33,9 @@ class EventsController {
   }
 
   async createEvent(req, res, next) {
-    try {
-      const { name, address, info, image_path, expires_date, author_name } =
+    console.log('User ID from req.user:', req.user.user_id); // Логирование user ID
+    // try {
+      const { name, address, info, image_path, expires_date,type_event_id} =
         req.body;
       const newEvent = await Event.create({
         name,
@@ -40,25 +43,33 @@ class EventsController {
         info,
         image_path,
         expires_date,
-        author_id: req.user.id, // Сохраняем user_id автора
+        author_id: req.user.user_id, // Сохраняем user_id автора
+        type_event_id,
       });
+      // Добавление автора в список посещений
+      await Attendance.create({
+        user_id: req.user.user_id,
+        event_id: newEvent.event_id
+    });
+      
       //созадние группового чата одновременно с созданием мероприятия
       const newChat = await Chat.create({
         name: `${name}-${newEvent.event_id} Group Chat`,
         displayName: name, // Сохраняем удобочитаемое имя
         chat_type: "GROUP",
-        userId: req.user.id, // Связываем чат с пользователем-автором
+        user_id: req.user.user_id, // Связываем чат с пользователем-автором
       });
       //добавление туда пользователя-автора
       await ChatUsers.create({
-        userId: req.user.id,
-        chatId: newChat.id,
+        user_id: req.user.user_id,
+        chat_id: newChat.event_chat_id,
+        // chat_id: newChat.chat_user_id, прежний вариант который выдавал ошибку
       });
 
       res.status(201).json(newEvent);
-    } catch (error) {
-      next(ApiError.internal("Failed to create event"));
-    }
+    // } catch (error) {
+    //   next(ApiError.internal("Failed to create event"));
+    // }
   }
 
   async updateEvent(req, res, next) {

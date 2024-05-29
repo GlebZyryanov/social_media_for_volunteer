@@ -123,6 +123,14 @@ const Attendance = sequelize.define("attendance", {
     primaryKey: true,
     autoIncrement: true,
   },
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  event_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 // Модель Notifications
@@ -169,11 +177,23 @@ const Chat = sequelize.define("chat", {
     type: DataTypes.ENUM("PRIVATE", "GROUP"),
     allowNull: false,
   },
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   
 });
 
 const ChatUsers = sequelize.define("chat_users", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  chat_user_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  chat_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 // Определение связей
@@ -194,8 +214,8 @@ Notifications.belongsTo(User);
 Event.hasMany(Notifications); //целесообразность этой связи следует проверить позже
 Notifications.belongsTo(Event);
 
-TypeEvent.hasMany(Event);
-Event.belongsTo(TypeEvent);
+TypeEvent.hasMany(Event, { foreignKey: 'type_event_id', as: 'events' });
+Event.belongsTo(TypeEvent, { foreignKey: 'type_event_id', as: 'typeEvent' });
 
 User.belongsToMany(Chat, { through: ChatUsers }); //когда юзер участник
 Chat.belongsToMany(User, { through: ChatUsers });
@@ -203,7 +223,8 @@ Chat.belongsToMany(User, { through: ChatUsers });
 User.hasMany(Message);
 Message.belongsTo(User);
 
-User.hasMany(Chat); //когда юзер создатель чата
+//когда юзер создатель чата!!!Вомзожно удалить тк функционал реализовал через добавление author_id в ивент
+User.hasMany(Chat); 
 Chat.belongsTo(User);
 
 Chat.hasMany(Message);
@@ -220,4 +241,6 @@ module.exports = {
   Chat,
   ChatUsers,
   Message,
+  Attendance,
+  Notifications,
 };

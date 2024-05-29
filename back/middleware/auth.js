@@ -22,10 +22,13 @@ const auth = async (req, res, next) => {
         // if (!user.isActive) {
         //     throw ApiError.forbidden('Account is inactive');
         // }
+        console.log('User found:', user); // Логирование найденного пользователя
 
         req.user = user;
+        console.log('req.user set:', req.user); // Логирование установленного req.user
         next();
     } catch (error) {
+        console.error('Error in auth middleware:', error); // Логирование ошибки
         next(error); // Передаём ошибку обработчику ошибок express
     }
   };
