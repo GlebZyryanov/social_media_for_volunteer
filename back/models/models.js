@@ -18,12 +18,14 @@ const User = sequelize.define(
     },
     surname: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
       primaryKey: false,
       autoIncrement: false,
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
@@ -31,9 +33,11 @@ const User = sequelize.define(
     },
     profile: {
       type: DataTypes.TEXT,
+      defaultValue: "some info about user",
     },
     phone: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     role: {
       type: DataTypes.ENUM("ADMIN", "USER"),
@@ -41,6 +45,7 @@ const User = sequelize.define(
     },
     image_path: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -48,7 +53,6 @@ const User = sequelize.define(
     },
     admin_password: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
   },
   {
@@ -74,10 +78,10 @@ const Event = sequelize.define("event", {
   address: {
     type: DataTypes.STRING,
   },
-  create_date: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
+  // create_date: {
+  //   type: DataTypes.DATE,
+  //   allowNull: false,
+  // },
   info: {
     type: DataTypes.TEXT,
   },
@@ -88,10 +92,14 @@ const Event = sequelize.define("event", {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  author_name: {
-    type: DataTypes.STRING,
+  author_id: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-  },
+    references: {
+        model: 'users', // Имя таблицы пользователей
+        key: 'user_id'
+    }
+},
 });
 
 // Модель Type_Event
@@ -126,6 +134,7 @@ const Notifications = sequelize.define("notifications", {
   },
   message: {
     type: DataTypes.TEXT,
+    defaultValue: "New user has entered to your event",
   },
 });
 
@@ -152,10 +161,15 @@ const Chat = sequelize.define("chat", {
   name: {
     type: DataTypes.STRING,
   },
+  displayName: {
+    type: DataTypes.STRING,
+    allowNull: true, // Это поле может быть null для приватных чатов
+},
   chat_type: {
     type: DataTypes.ENUM("PRIVATE", "GROUP"),
     allowNull: false,
   },
+  
 });
 
 const ChatUsers = sequelize.define("chat_users", {

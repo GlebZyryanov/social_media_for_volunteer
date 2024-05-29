@@ -26,7 +26,7 @@ class EventsTypeController{
             const type = await TypeEvent.create({name});
             return res.json(type);
         } catch (err) {
-            next(err);
+            next(ApiError.internal('Failed to create type of event'));
         }
     }
 
@@ -40,7 +40,7 @@ class EventsTypeController{
             await type.destroy();
             return res.json({ message: 'Type deleted successfully' });
         } catch (err) {
-            next(err);
+            next(ApiError.internal('Failed to delete type of event'));
         }
     }
 }

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models/models');
+const ApiError = require("../error/ApiError");
 
 const auth = async (req, res, next) => {
     try {
@@ -13,14 +14,14 @@ const auth = async (req, res, next) => {
             throw ApiError.unauthorized('Invalid token');
         }
   
-        const user = await User.findByPk(decoded.user_id);
+        const user = await User.findByPk(decoded.id);
         if (!user) {
             throw ApiError.unauthorized('Account not found');
         }
   
-        if (!user.isActive) {
-            throw ApiError.forbidden('Account is inactive');
-        }
+        // if (!user.isActive) {
+        //     throw ApiError.forbidden('Account is inactive');
+        // }
 
         req.user = user;
         next();
