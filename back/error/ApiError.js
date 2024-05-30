@@ -27,6 +27,9 @@ class ApiError {
     static internal(message) {
       return new ApiError(500, message)
     }
+    static conflict(message) {
+      return new ApiError(409, message);
+  }
   }
   
   module.exports = ApiError
