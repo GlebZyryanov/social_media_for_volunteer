@@ -39,7 +39,7 @@ class UserController {
       await user.save();
 
       const token = jwt.sign({ id: user.user_id }, process.env.SECRET_KEY, {
-        expiresIn: "1h",
+        expiresIn: "8000h",
       });
       return res.json({ token, user });
     } catch (error) {
@@ -195,15 +195,15 @@ class UserController {
 
   async upgradeRole(req, res, next) {
     try {
-      const { userID, adminPassword } = req.body;
-      const user = await User.findByPk(userID);
+      const {  admin_password } = req.body;
+      const user = await User.findByPk(req.user.user_id);
 
       if (!user) {
         next(ApiError.notFound("User not found"));
       }
 
       // Проверяем, соответствует ли введенный пароль admin_password пользователя
-      if (adminPassword !== user.admin_password) {
+      if (admin_password !== user.admin_password) {
         next(ApiError.unauthorized("Incorrect admin password"));
       }
 

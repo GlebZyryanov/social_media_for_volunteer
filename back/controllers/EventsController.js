@@ -67,7 +67,7 @@ class EventsController {
       //добавление туда пользователя-автора
       await ChatUsers.create({
         user_id: req.user.user_id,
-        chat_id: newChat.event_chat_id,
+        chat_id: newChat.chat_id,
         
       });
 
@@ -158,7 +158,7 @@ class EventsController {
       if (groupChat) {
         await ChatUsers.create({
           user_id: userID,
-          chat_id: groupChat.event_chat_id
+          chat_id: groupChat.chat_id
         });
       } else {
         console.log("Group chat not found.");
