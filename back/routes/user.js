@@ -11,10 +11,10 @@ router.post("/logout", auth, UserController.logout);
 
 router.get("/verify_user", auth, UserController.verify_user); //роут верификации и проверки роли для доступа к функционалу
 router.get("/", auth, UserController.getAllUsers); //роут получения всех пользователей юзером (Протестировано)
-router.get("/:userID", auth, UserController.getUserByID); //роут вывода одного пользователя (его профиля) (Протестировано)
+router.get("/:userID",  UserController.getUserByID); //роут вывода одного пользователя (его профиля) (Протестировано)
 
 
-router.put("/:userID/update", auth, UserController.updateUser); //роут изменения профиля пользователя(можно и пароль будет изменить)
+router.put("/:userID/update", auth,UserController.updateUser); //роут изменения профиля пользователя(можно и пароль будет изменить)
 router.get("/admin", auth, authAdmin, UserController.getAllUsersAdmin); //роут получения всех пользователей админом(с более чувствительной информации
 router.put("/:userID/admin", auth, authAdmin, UserController.getUserByIDAdmin); //роут получения чувствительной информации о пользователе (например админ пароль)
 router.put("/:userID/upgrade-role", auth, UserController.upgradeRole); //роут повышения роли пользователя до админа

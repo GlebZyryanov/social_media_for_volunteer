@@ -35,16 +35,19 @@ class EventsController {
     }
   }
 
-  async createEvent(req, res, next) {
+  async createEvent(req, res, next) {//тут тоже потом придумать обработчик для бана НЕ Жпега
     console.log("User ID from req.user:", req.user.user_id); // Логирование user ID
     try {
-      const { name, address, info, image_path, expires_date, type_event_id } =
+      const { name, address, info, expires_date, type_event_id } =
         req.body;
+      const {image_path} = req.files;
+      let fileName = uuidv4() + ".jpg"; // Генерируем уникальное имя для изображения
+      image_path.mv(path.resolve(__dirname, "..", "static", fileName));
       const newEvent = await Event.create({
         name,
         address,
         info,
-        image_path,
+        image_path: fileName,
         expires_date,
         author_id: req.user.user_id, // Сохраняем user_id автора
         type_event_id,
@@ -88,14 +91,14 @@ class EventsController {
 
       // Сохранение текущего названия мероприятия
       const currentEventName = event.name;
-      const { name, address, info, image_path, expires_date } = req.body;
+      const { name, address, info ,expires_date } = req.body;
 
       // Обновление полей мероприятия на основе данных из req.body
       const updatedEvent = await event.update({
         name: name || event.name,
         address: address || event.address,
         info: info || event.info,
-        image_path: image_path || event.image_path,
+       
         expires_date: expires_date || event.expires_date,
       });
       // Обновление названия чата, связанного с мероприятием

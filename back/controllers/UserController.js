@@ -1,8 +1,12 @@
-const {  User } = require('../models/models');
-const {Sequelize} = require("../db/db");
+const { User } = require("../models/models");
+const { Sequelize } = require("../db/db");
 const ApiError = require("../error/ApiError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const uuid = require("uuid");
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
+const fs = require("fs");
 
 class UserController {
   async register(req, res, next) {
@@ -90,7 +94,7 @@ class UserController {
       const users = await User.findAll();
       return res.json({ users });
     } catch (error) {
-      next(ApiError.internal('Failed to get users'));
+      next(ApiError.internal("Failed to get users"));
     }
   }
 
@@ -105,7 +109,7 @@ class UserController {
 
       return res.json({ user });
     } catch (error) {
-       next(ApiError.internal('Failed to get user'));
+      next(ApiError.internal("Failed to get user"));
     }
   }
 
@@ -124,20 +128,78 @@ class UserController {
       });
       return res.json({ users });
     } catch (error) {
-      next(ApiError.internal('Failed to find people'));
+      next(ApiError.internal("Failed to find people"));
     }
   }
 
   //тут тоже нужно пересмотреть немного - возможно удасться оптимизировать с помощью клиента
-  async updateUser(req, res, next) {
-    
+  // async updateUser(req, res, next) {
+
+  //   // try {
+  //     const { userID } = req.params;
+  //     const { name, surname, email, phone, profile, password } =
+  //       req.body;
+
+  //     const user = await User.findByPk(userID);
+
+  //     if (!user) {
+  //       next(ApiError.notFound("User not found"));
+  //     }
+
+  //     if (password) {
+  //       user.password = await bcrypt.hash(password, 10);
+  //     }
+
+  //     user.name = name || user.name;
+  //     console.log(user.name)
+  //     console.log(name)
+  //     user.surname = surname || user.surname;
+  //     console.log(user.surname)
+  //     console.log(surname)
+  //     user.email = email || user.email;
+  //     console.log(user.email)
+  //     console.log(email)
+  //     user.phone = phone || user.phone;
+  //     console.log(user.phone)
+  //     console.log(phone)
+  //     user.profile = profile || user.profile;
+  //     console.log(user.profile)
+  //     console.log(profile)
+
+  //     if (req.files && req.files.image) {
+  //       const image = req.files.image;
+  //       const ext = path.extname(image.name);
+  //       if (ext !== '.jpg') {
+  //         return next(ApiError.badRequest("Only .jpg files are allowed"));
+  //       }
+
+  //       const image_name = uuid.v4() + ext;
+  //       const image_path = path.join(__dirname, '..', 'static', image_name);
+
+  //       // Ensure the uploads directory exists
+  //       fs.mkdirSync(path.dirname(image_path), { recursive: true });
+
+  //       // Move the file to the desired location
+  //       await image.mv(image_path);
+
+  //       user.image_path = image_name;
+  //       console.log(user.image_path)
+  //     }
+
+  //   await user.save();
+
+  //     return res.json({ user });
+  //   // } catch (error) {
+  //   //   next(ApiError.internal('Failed to update user'));
+  //   // }
+  // }
+  async updateUser(req, res, next) { //позже оптимизировать и прикрутить ошибку при загрузке НЕ ЖПЕГА
     try {
       const { userID } = req.params;
-      const { name, surname, email, phone, profile, image_path, password } =
+      const { name, surname, email, phone, profile ,password } =
         req.body;
-
+      const {image_path} = req.files;
       const user = await User.findByPk(userID);
-
       if (!user) {
         next(ApiError.notFound("User not found"));
       }
@@ -151,12 +213,25 @@ class UserController {
       user.email = email || user.email;
       user.phone = phone || user.phone;
       user.profile = profile || user.profile;
-      user.image_path = image_path || user.image_path;
-
+      
+      if (image_path) {
+        
+        let fileName = uuidv4() + ".jpg"; // Генерируем уникальное имя для изображения
+        
+        image_path.mv(path.resolve(__dirname, "..", "static", fileName));
+        user.image_path = fileName; // Сохраняем путь к изображению в базе данных
+      } else {
+        next(
+          ApiError.internal(
+            "Failed to upload image. Only .jpg files are allowed"
+          )
+        );
+      }
+      
       await user.save();
       return res.json({ user });
     } catch (error) {
-      next(ApiError.internal('Failed to update user'));
+      next(ApiError.internal("Failed to update user"));
     }
   }
 
@@ -166,7 +241,7 @@ class UserController {
       const users = await User.findAll();
       return res.json({ users });
     } catch (error) {
-      next(ApiError.internal('Failed to get users'));
+      next(ApiError.internal("Failed to get users"));
     }
   }
 
@@ -189,13 +264,13 @@ class UserController {
       // Возвращаем админу информацию, включая admin_password пользователя
       return res.json({ user });
     } catch (error) {
-      next(ApiError.internal('Failed to get user'));
+      next(ApiError.internal("Failed to get user"));
     }
   }
 
   async upgradeRole(req, res, next) {
     try {
-      const {  admin_password } = req.body;
+      const { admin_password } = req.body;
       const user = await User.findByPk(req.user.user_id);
 
       if (!user) {
@@ -213,7 +288,7 @@ class UserController {
 
       return res.json({ user });
     } catch (error) {
-      next(ApiError.internal('Failed to upgrade role'));
+      next(ApiError.internal("Failed to upgrade role"));
     }
   }
 }
