@@ -11,7 +11,7 @@ router.post("/logout", auth, UserController.logout);
 
 router.get("/verify_user", auth, UserController.verify_user); //роут верификации и проверки роли для доступа к функционалу
 router.get("/", auth, UserController.getAllUsers); //роут получения всех пользователей юзером (Протестировано)
-router.get("/:userID",  UserController.getUserByID); //роут вывода одного пользователя (его профиля) (Протестировано)
+router.get("/:userID", auth, UserController.getUserByID); //роут вывода одного пользователя (его профиля) (Протестировано)
 
 
 router.put("/:userID/update", auth,UserController.updateUser); //роут изменения профиля пользователя(можно и пароль будет изменить)

@@ -9,12 +9,25 @@ const {
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const uuid = require("uuid");
+const { v4: uuidv4 } = require("uuid");
 const path = require("path"); // для работы с путями и загрузки изображений
+const { where } = require("sequelize");
 
 class EventsController {
   async getAllEvents(req, res, next) {
+    const {type_event_id} = req.query;
+    
     try {
-      const events = await Event.findAll();
+      // Проверка наличия параметра type_event_id
+      let events;
+      if (type_event_id) {
+        events = await Event.findAll({
+          where: { type_event_id }
+        });
+      } else {
+        // Если параметр отсутствует, возвращаем все события
+        events = await Event.findAll();
+      }
       return res.json(events);
     } catch (error) {
       next(ApiError.internal("Failed to get events"));
@@ -37,7 +50,7 @@ class EventsController {
 
   async createEvent(req, res, next) {//тут тоже потом придумать обработчик для бана НЕ Жпега
     console.log("User ID from req.user:", req.user.user_id); // Логирование user ID
-    try {
+    // try {
       const { name, address, info, expires_date, type_event_id } =
         req.body;
       const {image_path} = req.files;
@@ -75,9 +88,9 @@ class EventsController {
       });
 
       res.status(201).json(newEvent);
-    } catch (error) {
-      next(ApiError.internal("Failed to create event"));
-    }
+    // } catch (error) {
+    //   next(ApiError.internal("Failed to create event"));
+    // }
   }
 
   async updateEvent(req, res, next) {
