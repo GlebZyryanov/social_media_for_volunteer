@@ -65,7 +65,7 @@ class UserController {
     }
   }
 
-  async verify_user(req, res) {
+  async verify_user(req, res) { //ВОЗМОЖНО УДАЛИТЬ ЕГО ТК ЕСТЬ РОУТ НИЖЕ
     try {
       // Проверяем, есть ли роль в теле запроса
       const { role } = req.body;
@@ -88,6 +88,17 @@ class UserController {
       next(error);
     }
   }
+  async getUserRole(req, res, next) {
+    try {
+        if (!req.user || !req.user.role) {
+            throw ApiError.forbidden("User role not provided");
+        }
+
+        return res.status(200).json({ role: req.user.role });
+    } catch (error) {
+        next(error);
+    }
+}
 
   async getAllUsers(req, res, next) {
     try {
