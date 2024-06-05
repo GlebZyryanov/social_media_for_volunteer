@@ -1,10 +1,24 @@
 import React from "react";
+import NavBar from "../components/NavBar";
+import { Col, Container, Row } from "react-bootstrap";
+import TypeBar from "../components/TypeBar";
+import EventList from "../components/EventList";
 
-//страница вывода всех мероприятий - слева будет меню с типами
-//справа - колонка с профилем пользователя, чатами и юзерами
-//сверху должен быть навбар с названием проекта, добавлением мероприятия, апгрейдом до админа для юзера и панелью управления для админа
+
+
 const AllEvents = () => {
-  return <div>AllEvents</div>;
+  return (
+    <Container className="mt-3 ">
+        <Row className="d-flex ">
+            <Col  md={3}>
+            <TypeBar />
+            </Col>
+            <Col md={9}>
+            <EventList />
+            </Col>
+        </Row>
+    </Container>
+  );
 };
 
 export default AllEvents;

@@ -8,6 +8,7 @@ import EventStore from "./store/EventStore";
 import ChatStore from "./store/ChatStore";
 import ChatUsersStore from "./store/ChatUsersStore";
 import AttendanceStore from "./store/AttendanceStore";
+
 export const Context = createContext(null);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

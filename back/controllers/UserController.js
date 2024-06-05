@@ -65,40 +65,21 @@ class UserController {
     }
   }
 
-  async verify_user(req, res) { //ВОЗМОЖНО УДАЛИТЬ ЕГО ТК ЕСТЬ РОУТ НИЖЕ
+  async getUserRole(req, res, next) {
     try {
-      // Проверяем, есть ли роль в теле запроса
-      const { role } = req.body;
-      if (!role) {
-        throw ApiError.badRequest("Role is required");
-      }
-
-      // Проверяем, есть ли у пользователя роль
       if (!req.user || !req.user.role) {
         throw ApiError.forbidden("User role not provided");
       }
 
-      // Сравниваем роль из тела запроса с ролью пользователя
-      const isValid = role === req.user.role;
-
-      // Возвращаем результат сравнения
-      return res.status(200).json({ isValid });
+      return res.status(200).json({ role: req.user.role });
     } catch (error) {
-      // Передаём ошибку дальше обработчику ошибок express
       next(error);
     }
   }
-  async getUserRole(req, res, next) {
-    try {
-        if (!req.user || !req.user.role) {
-            throw ApiError.forbidden("User role not provided");
-        }
-
-        return res.status(200).json({ role: req.user.role });
-    } catch (error) {
-        next(error);
-    }
-}
+  async check(req, res, next) {
+    const token = generateJWT(req.user.id, req.user.email);
+    return res.json({ token });
+  }
 
   async getAllUsers(req, res, next) {
     try {
@@ -204,12 +185,12 @@ class UserController {
   //   //   next(ApiError.internal('Failed to update user'));
   //   // }
   // }
-  async updateUser(req, res, next) { //позже оптимизировать и прикрутить ошибку при загрузке НЕ ЖПЕГА
+  async updateUser(req, res, next) {
+    //позже оптимизировать и прикрутить ошибку при загрузке НЕ ЖПЕГА
     try {
       const { userID } = req.params;
-      const { name, surname, email, phone, profile ,password } =
-        req.body;
-      const {image_path} = req.files;
+      const { name, surname, email, phone, profile, password } = req.body;
+      const { image_path } = req.files;
       const user = await User.findByPk(userID);
       if (!user) {
         next(ApiError.notFound("User not found"));
@@ -224,11 +205,10 @@ class UserController {
       user.email = email || user.email;
       user.phone = phone || user.phone;
       user.profile = profile || user.profile;
-      
+
       if (image_path) {
-        
         let fileName = uuidv4() + ".jpg"; // Генерируем уникальное имя для изображения
-        
+
         image_path.mv(path.resolve(__dirname, "..", "static", fileName));
         user.image_path = fileName; // Сохраняем путь к изображению в базе данных
       } else {
@@ -238,7 +218,7 @@ class UserController {
           )
         );
       }
-      
+
       await user.save();
       return res.json({ user });
     } catch (error) {

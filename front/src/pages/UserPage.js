@@ -1,10 +1,14 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import { observer } from "mobx-react-lite";
+import UserProfile from "../components/UserProfile";
+import UserStore from "../store/UserStore"; // Убедитесь, что путь к вашему store правильный
 
-//страница вывода профиля юзера, админ может видеть также его админ пароль
-//а если это страница пользователя, то он может редактировать профиль, другие могут просматривать и написать ему сообщение
-//в таком случае создается приватный чат
-const UserPage = () => {
-  return <div>UserPage</div>;
-};
+const UserPage = observer(() => {
+  
+ 
+
+  
+});
 
 export default UserPage;
