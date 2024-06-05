@@ -6,13 +6,13 @@ import UserItem from "./UserItem";
 
 const UserList = observer(() => {
   const { user } = useContext(Context);
-  if(!user){
-    const isUser = false;
-  }
+  // if(!user){
+  //   const isUser = false;
+  // }
   return (  
     <Row className="d-flex flex-column">
       {user.users.map((user) => (
-        <UserItem key={user.id} user={user} />
+        <UserItem key={user.user_id} user={user} />
       ))}
     </Row>
   );

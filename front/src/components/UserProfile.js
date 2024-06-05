@@ -3,11 +3,13 @@ import { observer } from "mobx-react-lite";
 import { Card, Image, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { CHATPAGE_ROUTE, UPDATEUSER_ROUTE } from "../utils/consts";
-import UserStore from "../store/UserStore"; // Убедитесь, что путь к вашему store правильный
 
-const UserProfile = observer(({ user }) => {
+
+const UserProfile = observer(({ user, currentUser }) => {
   const navigate = useNavigate();
-  const isCurrentUser =false;
+  const isCurrentUser = currentUser.user_id === user.user_id;
+console.log("userid",user.user_id);
+console.log("currentuserid",currentUser.user_id);
 
   return (
     <Card
@@ -17,9 +19,14 @@ const UserProfile = observer(({ user }) => {
     >
       <div style={{ display: "flex", width: "100%" }}>
         <Image
-          src={user.image_path}
-          roundedCircle
-          style={{ width: "50%", marginRight: "10px", objectFit: "cover" }}
+          src={`${process.env.REACT_APP_API_URL}/${user.image_path}`}
+          
+          style={{ width: "50%", marginRight: "10px", objectFit: "contain", maxWidth:400, maxHeight:400 }}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src =
+              "https://steamuserimages-a.akamaihd.net/ugc/1835802620427924961/F005E68A9567D2C1098172DA117A07F0A790EA45/?imw=512&amp;imh=365&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true";
+          }}
         />
         <div style={{ flex: 1, paddingLeft: "10px" }}>
           <Card.Title style={{ fontSize: "2rem" }}>{user.name} {user.surname}</Card.Title>

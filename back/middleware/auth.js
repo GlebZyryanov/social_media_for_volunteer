@@ -24,7 +24,7 @@ const auth = async (req, res, next) => {
         // }
         console.log('User found:', user); // Логирование найденного пользователя
 
-        req.user = user;
+        req.user = decoded;
         console.log('req.user set:', req.user); // Логирование установленного req.user
         next();
     } catch (error) {

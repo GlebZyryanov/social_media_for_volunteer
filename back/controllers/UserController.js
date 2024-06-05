@@ -8,6 +8,15 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const fs = require("fs");
 
+
+const generateJwt = (id, email) => {
+  return jwt.sign(
+      {id, email},
+      process.env.SECRET_KEY,
+      {expiresIn: '8000h'}
+  )
+}
+
 class UserController {
   async register(req, res, next) {
     try {
@@ -20,9 +29,7 @@ class UserController {
         password: hashedPassword,
       });
 
-      const token = jwt.sign({ id: user.user_id }, process.env.SECRET_KEY, {
-        expiresIn: "8000h",
-      });
+      const token = generateJwt(user.user_id, user.email);
       return res.json({ token, user });
     } catch (error) {
       next(ApiError.internal("Failed to register")); // Возникла внутренняя ошибка сервера
@@ -42,9 +49,7 @@ class UserController {
       user.isActive = true;
       await user.save();
 
-      const token = jwt.sign({ id: user.user_id }, process.env.SECRET_KEY, {
-        expiresIn: "8000h",
-      });
+      const token = generateJwt(user.user_id, user.email);
       return res.json({ token, user });
     } catch (error) {
       next(ApiError.internal("Failed to login"));
@@ -77,7 +82,7 @@ class UserController {
     }
   }
   async check(req, res, next) {
-    const token = generateJWT(req.user.id, req.user.email);
+    const token = generateJwt(req.user.user_id, req.user.email);
     return res.json({ token });
   }
 

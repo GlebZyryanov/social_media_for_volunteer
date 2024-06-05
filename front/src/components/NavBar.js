@@ -18,23 +18,38 @@ import {
   USERPAGE_ROUTE,
   REGISTRATION_ROUTE,
 } from "../utils/consts";
+import { getCurrentUser, logout } from "../http/authAPI";
 
 const NavBar = observer(() => {
   const { user } = useContext(Context);
+  // console.log(user);
+  // console.log(user.user.name, user.user.image_path, user.isAuth);
+  // console.log("id", user.user.user_id);
+  // console.log("name", user.user.name);
+  // console.log("surname", user.user.surname);
+  // console.log("image", user.user.image_path);
+  // console.log("email", user.user.email);
+  // console.log("profile", user.user.profile);
+  // console.log("phone", user.user.phone);
+  // console.log("password", user.user.password);
+  // console.log("admin_password", user.user.admin_password);
+  // console.log("isActive", user.user.isActive);
+  // console.log("role", user.user.role);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const logOutUser = () => {
+  const logOutUser = async () => {
     user.setUser({});
     user.setIsAuth(false);
-  };
-  const logOutAdmin = () => {
-    user.setUser({});
-    user.setIsAdmin(false);
+
+    console.log(user.isAuth);
+    if (!user.isAuth) {
+      navigate(LOGIN_ROUTE);
+    }
   };
 
   const goToProfile = () => {
-    navigate(`${USERPAGE_ROUTE}/${user.id}`);
+    navigate(`${USERPAGE_ROUTE}/${user.user_id}`);
   };
 
   const isAuthRoute = [LOGIN_ROUTE, REGISTRATION_ROUTE].includes(
@@ -73,13 +88,18 @@ const NavBar = observer(() => {
               style={{ display: "flex", alignItems: "center" }}
             >
               <Image
-                src={user.image_path}
+                src={`${process.env.REACT_APP_API_URL}${user.user.image_path}`}
                 roundedCircle
                 width="40"
                 height="40"
                 className="me-2"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://steamuserimages-a.akamaihd.net/ugc/1835802620427924961/F005E68A9567D2C1098172DA117A07F0A790EA45/?imw=512&amp;imh=365&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true";
+                }}
               />
-              {user.name}
+              {user.user.name}
             </div>
           )}
         </Navbar.Brand>
@@ -135,15 +155,9 @@ const NavBar = observer(() => {
                     Апгрейд Роли
                   </Button>
                 )}
-                {user.role === "ADMIN" ? (
-                  <Button variant="outline-light" onClick={logOutAdmin}>
-                    Выйти
-                  </Button>
-                ) : (
-                  <Button variant="outline-light" onClick={logOutUser}>
-                    Выйти
-                  </Button>
-                )}
+                <Button variant="outline-light" onClick={logOutUser}>
+                  Выйти
+                </Button>
               </Nav>
             </Navbar.Collapse>
           </>

@@ -74,12 +74,23 @@ export const getUserByID = async (userID) => {
     return data.user;
   };
 
-  //проверка токена на валидность
-  export const check = async () => {
-    // Отправляем запрос на сервер для получения данных пользователя
-    const { data } = await $authHost.get("api/user/auth");
-    // Сохраняем токен в локальном хранилище
-    localStorage.setItem("token", data.token);
-    // Возвращаем декодированный токен
-    return jwtDecode(data.token);
+// Функция для получения информации о текущем пользователе
+export const getCurrentUser = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken && decodedToken.id) {
+          const { data } = await $authHost.get(`api/user/${decodedToken.id}`);
+          return data.user;
+        }
+        throw new Error("Invalid token structure");
+      } catch (error) {
+        console.error("Error decoding token or fetching user:", error);
+        return null;
+      }
+    } else {
+      console.warn("No token found in localStorage");
+      return null;
+    }
   };

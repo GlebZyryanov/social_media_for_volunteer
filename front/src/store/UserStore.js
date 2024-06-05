@@ -4,33 +4,20 @@ export default class UserStore {
   constructor() {
     this._isAuth = false;
     this._isAdmin = false;
-    this._user = []; 
-    // this._users = [
-    //   {
-    //     id: 1,
-    //     name: "User1",
-    //     surname: "Surname",
-    //     email: "email",
-    //     password: "password",
-    //     profile: "profile",
-    //     phone: "+89999999999",
-    //     role: "USER",
-    //     image_path: "https://dvscan.ru/wp-content/uploads/2014/10/af0d32cd39a1524c_org.jpg",
-    //     isActive: false,
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "User2",
-    //     surname: "Surname",
-    //     email: "email",
-    //     password: "password",
-    //     profile: "profile",
-    //     phone: "+89999999999",
-    //     role: "USER",
-    //     image_path: "https://dvscan.ru/wp-content/uploads/2014/10/af0d32cd39a1524c_org.jpg",
-    //     isActive: false,
-    //   },
-    // ];
+    this._user = {
+      user_id:'',
+      name:'',
+      surname:'',
+      email:'',
+      image_path: "",
+      profile: '',
+      phone: '',
+      isActive: false,
+      role:'',
+      password: '',
+      admin_password: '',
+    }; 
+    this._users = [];
     makeAutoObservable(this);
   }
 
@@ -46,6 +33,10 @@ export default class UserStore {
     this._user = user;
   }
 
+  setUsers(users) { // Метод для установки списка пользователей
+    this._users = users;
+  }
+
 
   get isAuth() {
     return this._isAuth;
@@ -59,5 +50,8 @@ export default class UserStore {
     return this._isAdmin;
   }
 
+  get users() { // Геттер для списка пользователей
+    return this._users;
+  }
 
 }

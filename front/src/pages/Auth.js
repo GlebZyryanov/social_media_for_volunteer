@@ -26,9 +26,9 @@ const Auth = observer(() => {
       if (isLogin) {
         data = await login(email, password);
       } else {
-        data = await registration(name,email, password);
+        data = await registration(name, email, password);
       }
-      user.setUser(user);
+      user.setUser(data);
       user.setIsAuth(true);
       navigate(ALLEVENTS_ROUTE);
     } catch (e) {
@@ -36,7 +36,6 @@ const Auth = observer(() => {
     }
   };
 
-  console.log(location);
 
   return (
     <Container

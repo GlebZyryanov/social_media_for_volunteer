@@ -2,6 +2,7 @@ const express = require("express"); //получаем класс роутера
 const UserController = require("../controllers/UserController");
 const { auth, authAdmin } = require("../middleware/auth");
 const router = express.Router();
+router.get("/check", auth, UserController.check);
 router.get("/find_people", auth, UserController.findPeople); // Маршрут для поиска пользователей (Протестировано)
 router.post("/register", UserController.register); //роуты регистрации авторизации обычного пользователя (Протестировано)
 router.post("/login", UserController.login); //(Протестировано)
@@ -13,6 +14,6 @@ router.put("/:userID/update", auth,UserController.updateUser); //роут изм
 router.get("/admin", auth, authAdmin, UserController.getAllUsersAdmin); //роут получения всех пользователей админом(с более чувствительной информации
 router.put("/:userID/admin", auth, authAdmin, UserController.getUserByIDAdmin); //роут получения чувствительной информации о пользователе (например админ пароль)
 router.put("/:userID/upgrade-role", auth, UserController.upgradeRole); //роут повышения роли пользователя до админа
-router.get("/auth", auth, UserController.check);
+
 //далее будут еще роутинги для бана пользователей админами либо для бана ивентов админами(в роуте ивент)
 module.exports = router;
