@@ -18,7 +18,7 @@ import {
   USERPAGE_ROUTE,
   REGISTRATION_ROUTE,
 } from "../utils/consts";
-import { getCurrentUser, logout } from "../http/authAPI";
+import { getCurrentUser, login, logout } from "../http/authAPI";
 
 const NavBar = observer(() => {
   const { user } = useContext(Context);
@@ -45,11 +45,12 @@ const NavBar = observer(() => {
     console.log(user.isAuth);
     if (!user.isAuth) {
       navigate(LOGIN_ROUTE);
+      logout()
     }
   };
 
   const goToProfile = () => {
-    navigate(`${USERPAGE_ROUTE}/${user.user_id}`);
+    navigate(`${USERPAGE_ROUTE}/${user.user.user_id}`);
   };
 
   const isAuthRoute = [LOGIN_ROUTE, REGISTRATION_ROUTE].includes(

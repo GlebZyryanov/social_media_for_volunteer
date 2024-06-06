@@ -20,8 +20,8 @@ export const login = async (email, password) => {
 };
 
 // Выход из системы
-export const logout = async () => {
-  await $authHost.post("api/user/logout");
+export const logout = async (email,password) => {
+  const { data } = await $authHost.post("api/user/logout",{email,password});
   localStorage.removeItem("token");
 };
 
@@ -52,7 +52,7 @@ export const getUserByID = async (userID) => {
   
   // Обновление профиля пользователя
   export const updateUser = async (userID, userData) => {
-    const { data } = await $authHost.put(`api/user/${userID}/update`, userData);
+    const { data } = await $authHost.put(`api/user/update/${userID}`, userData);
     return data.user;
   };
   

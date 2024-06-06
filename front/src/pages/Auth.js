@@ -53,6 +53,7 @@ const Auth = observer(() => {
               <Form.Control
                 className="mt-3"
                 placeholder="Введите ваш email"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -69,12 +70,14 @@ const Auth = observer(() => {
               <Form.Control
                 className="mt-3"
                 placeholder="Введите ваш email"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Form.Control
                 className="mt-3"
                 placeholder="Как вас зовут?"
+                type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />

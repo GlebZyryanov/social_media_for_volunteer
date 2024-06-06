@@ -7,7 +7,6 @@ import ChatPage from "../pages/ChatPage";
 import CreateEvent from "../pages/CreateEvent";
 import EventPage from "../pages/EventPage";
 import UpdateEvent from "../pages/UpdateEvent";
-import UpdateUser from "../pages/UpdateUser";
 import UpgradeRole from "../pages/UpgradeRole";
 import UserPage from "../pages/UserPage";
 import ProtectedRoute from "../components/ProtectedRout";
@@ -28,6 +27,7 @@ import {
   USERPAGE_ROUTE,
 } from "../utils/consts";
 import { Route, Routes } from "react-router-dom";
+import ProfileEdit from "../pages/ProfileEdit";
 
 const AppRouter = () => (
   <Routes>
@@ -69,7 +69,7 @@ const AppRouter = () => (
     />
     <Route
       path={`${UPDATEUSER_ROUTE}/:id`}
-      element={<ProtectedRoute element={<UpdateUser />} />}
+      element={<ProtectedRoute element={<ProfileEdit />} />}
     />
     <Route
       path={`${UPGRADEROLE_ROUTE}/:id`}

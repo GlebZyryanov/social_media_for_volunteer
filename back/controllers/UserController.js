@@ -58,15 +58,20 @@ class UserController {
 
   async logout(req, res, next) {
     try {
-      const user = req.user;
-
+      const { id } = req.user;
+  
+      const user = await User.findByPk(id);
+      if (!user) {
+        return next(ApiError.notFound("User not found"));
+      }
+  
       // Обновляем состояние isActive при выходе
       user.isActive = false;
       await user.save();
-
+  
       return res.json({ message: "Logout successful" });
     } catch (error) {
-      next(ApiError.internal(error.message));
+      next(ApiError.internal("Failed to logout"));
     }
   }
 
