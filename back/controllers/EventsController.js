@@ -50,6 +50,8 @@ class EventsController {
 
   async createEvent(req, res, next) {//тут тоже потом придумать обработчик для бана НЕ Жпега
     console.log("User ID from req.user:", req.user.user_id); // Логирование user ID
+    console.log("User ID from req.user:", req.user.id); // Логирование user ID
+    console.log("User ID from req.user:", req.user); // Логирование user ID
     // try {
       const { name, address, info, expires_date, type_event_id } =
         req.body;
@@ -62,12 +64,12 @@ class EventsController {
         info,
         image_path: fileName,
         expires_date,
-        author_id: req.user.user_id, // Сохраняем user_id автора
+        author_id: req.user.id, // Сохраняем user_id автора
         type_event_id,
       });
       // Добавление автора в список посещений
       await Attendance.create({
-        user_id: req.user.user_id,
+        user_id: req.user.id,
         event_id: newEvent.event_id,
       });
 
@@ -78,11 +80,11 @@ class EventsController {
         displayName: name, 
         chat_type: "GROUP",
         // Связываем чат с пользователем-автором
-        user_id: req.user.user_id, 
+        user_id: req.user.id, 
       });
       //добавление туда пользователя-автора
       await ChatUsers.create({
-        user_id: req.user.user_id,
+        user_id: req.user.id,
         chat_id: newChat.chat_id,
         
       });
@@ -135,7 +137,7 @@ class EventsController {
   }
   async joinEvent(req, res, next) {
     const { eventID } = req.params;
-    const userID = req.user.user_id;
+    const userID = req.user.id;
   
     console.log("eventID:", eventID);
     console.log("userID:", userID);

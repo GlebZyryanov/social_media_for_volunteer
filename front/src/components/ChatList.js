@@ -9,7 +9,7 @@ const ChatList = observer(() => {
   return (
     <Row className="d-flex flex-column">
       {chat.chats.map((chat) => (
-        <ChatItem key={chat.id} chat={chat} />
+        <ChatItem key={chat.chat_id} chat={chat} />
       ))}
     </Row>
   );

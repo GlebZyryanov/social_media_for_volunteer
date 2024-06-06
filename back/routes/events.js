@@ -6,7 +6,7 @@ const { auth, authAdmin } = require("../middleware/auth");
 router.post('/',auth, EventsController.createEvent); //роут создания мероприятия (протестировано)
 router.get('/',auth, EventsController.getAllEvents); //роут вывода всех мероприятий (протестировано)
 router.get('/:eventID',auth,EventsController.getEventByID); //показ одного конкретного мероприятия (протестировано)
-router.put('/:eventID/update',auth,EventsController.updateEvent); //редактировать мероприятие (протестировано)
-router.post('/:eventID/join',auth,EventsController.joinEvent); // присоединение к мероприятию пользователя
+router.put('/update/:eventID',auth,EventsController.updateEvent); //редактировать мероприятие (протестировано)
+router.post('/join/:eventID',auth,EventsController.joinEvent); // присоединение к мероприятию пользователя
 //мб добавить после удаление мероприятия, пока хз
 module.exports = router;

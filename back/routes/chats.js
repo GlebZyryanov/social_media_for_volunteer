@@ -10,7 +10,7 @@ router.post('/private',auth,ChatsController.createPrivateChat) //роут соз
 
 router.post('/:chatID',auth,ChatsController.createMessage) //роут создания сообщения в чате
 
-router.put('/:chatID/leave',auth,ChatsController.leaveChat) //роут покидания группы
+router.put('/leave/:chatID',auth,ChatsController.leaveChat) //роут покидания группы
 
 //router.delete('/:chatId',auth, ) //роут удаления чата -скорее всего удалять его не нужно с этим сложности, это потом
 

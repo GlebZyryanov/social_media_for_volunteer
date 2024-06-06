@@ -10,7 +10,7 @@ import { Context } from "../index";
 
 
 
-const AllEvents = () => {
+const AllUsers = () => {
   const { user } = useContext(Context);
 
   useEffect(() => {
@@ -42,4 +42,4 @@ const AllEvents = () => {
   );
 };
 
-export default AllEvents;
+export default AllUsers;

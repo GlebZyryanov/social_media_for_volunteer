@@ -272,7 +272,7 @@ class UserController {
   async upgradeRole(req, res, next) {
     try {
       const { admin_password } = req.body;
-      const user = await User.findByPk(req.user.user_id);
+      const user = await User.findByPk(req.user.id);
 
       if (!user) {
         next(ApiError.notFound("User not found"));

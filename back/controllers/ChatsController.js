@@ -5,7 +5,8 @@ require("express-async-errors");
 class ChatsController {
   async getAllChats(req, res, next) {
     try {
-      const userID = req.user.user_id;
+      const userID = req.user.id;
+      console.log("ChatController userID:", userID);
       const chats = await Chat.findAll({
         include: [
           {
@@ -22,26 +23,12 @@ class ChatsController {
     } catch (error) {
       next(ApiError.internal("Failed to get chats"));
     }
-    // try {
-    //     const userID = req.user.user_id;
-    //     const chats = await Chat.findAll({
-    //         include: [{
-    //             model: User,
-    //             through: {
-    //                 where: { user_id: userID }
-    //             }
-    //         }]
-    //     });
-    //     res.json(chats);
-    // } catch (error) {
-    //     next(ApiError.internal("Failed to get chats"));
-    // }
   }
 
   async getChatByID(req, res, next) {
     try {
       const { chatID } = req.params;
-      const userID = req.user.user_id;
+      const userID = req.user.id;
 
       console.log("chatID:", chatID, "userID:", userID); // Логирование
 
@@ -68,6 +55,7 @@ class ChatsController {
 
       // Проверяем, состоит ли пользователь в чате
       const userInChat = chat.users.some((user) => user.user_id === userID);
+      
 
       if (!userInChat) {
         return next(ApiError.forbidden("Access denied"));
@@ -78,38 +66,12 @@ class ChatsController {
       console.error("Error in getChatByID:", error); // Логирование ошибки
       next(ApiError.internal("Failed to get chat"));
     }
-    // // try {
-    //     const { chatID } = req.params;
-    //     const userID = req.user.user_id;
-    //     const chat = await Chat.findOne({
-    //         where: { event_chat_id: chatID },
-    //         include: [{
-    //             model: Message,
-    //             include: [User]
-    //         }, {
-    //             model: User,
-    //             through: {
-    //                 where: { user_id: userID }
-    //             }
-    //         }]
-    //     });
-
-    //     if (!chat) {
-    //         return next(ApiError.notFound("Chat not found or access denied"));
-    //     }
-
-    //     res.json(chat);
-    // // } catch (error) {
-    // //     next(ApiError.internal("Failed to get chat"));
-    // // }
   }
 
   async createPrivateChat(req, res, next) { 
     try {
         const { targetUserID } = req.body;
-        const userID = req.user.user_id;
-  
-        // Check if chat already exists
+        const userID = req.user.id;
         const existingChat = await Chat.findOne({
           where: { chat_type: "PRIVATE" },
           include: [
@@ -120,7 +82,7 @@ class ChatsController {
                 user_id: [userID, targetUserID],
               },
               through: {
-                attributes: [], // Exclude attributes from the join table
+                attributes: [], 
               },
             },
           ],
@@ -129,8 +91,7 @@ class ChatsController {
         if (existingChat) {
           return next(ApiError.conflict("Private chat already exists"));
         }
-  
-        // Get user names
+
         const user = await User.findByPk(userID);
         const targetUser = await User.findByPk(targetUserID);
   
@@ -155,31 +116,13 @@ class ChatsController {
       } catch (error) {
         next(ApiError.internal("Failed to create private chat"));
       }
-    // try {
-    //   const { targetUserID } = req.body;
-    //   const userID = req.user.user_id;
-
-    //   const chat = await Chat.create({
-    //     chat_type: "PRIVATE",
-    //     user_id: userID,
-    //   });
-
-    //   await ChatUsers.bulkCreate([
-    //     { user_id: userID, chat_id: chat.chat_id },
-    //     { user_id: targetUserID, chat_id: chat.chat_id },
-    //   ]);
-
-    //   res.status(201).json(chat);
-    // } catch (error) {
-    //   next(ApiError.internal("Failed to create private chat"));
-    // }
   }
 
   async createMessage(req, res, next) {
     try {
       const { chatID } = req.params;
       const { message_text } = req.body;
-      const userID = req.user.user_id;
+      const userID = req.user.id;
 
       const chat = await Chat.findByPk(chatID);
 
@@ -202,7 +145,7 @@ class ChatsController {
   async leaveChat(req, res, next) {
     try {
       const { chatID } = req.params;
-      const userID = req.user.user_id;
+      const userID = req.user.id;
 
       const chat = await Chat.findByPk(chatID);
 

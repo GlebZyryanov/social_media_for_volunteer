@@ -27,7 +27,7 @@ import {
   USERPAGE_ROUTE,
 } from "../utils/consts";
 import { Route, Routes } from "react-router-dom";
-import ProfileEdit from "../pages/ProfileEdit";
+import UserProfileEdit from "../pages/UserProfileEdit";
 
 const AppRouter = () => (
   <Routes>
@@ -69,7 +69,7 @@ const AppRouter = () => (
     />
     <Route
       path={`${UPDATEUSER_ROUTE}/:id`}
-      element={<ProtectedRoute element={<ProfileEdit />} />}
+      element={<ProtectedRoute element={<UserProfileEdit />} />}
     />
     <Route
       path={`${UPGRADEROLE_ROUTE}/:id`}

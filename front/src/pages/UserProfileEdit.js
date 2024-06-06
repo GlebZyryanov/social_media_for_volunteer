@@ -7,7 +7,7 @@ import { updateUser } from '../http/authAPI';
 import { useNavigate } from 'react-router-dom';
 import { USERPAGE_ROUTE } from '../utils/consts';
 
-const ProfileEdit = observer(() => {
+const UserProfileEdit = observer(() => {
   const { user } = useContext(Context);
   const [name, setName] = useState(user.user.name);
   const [surname, setSurname] = useState(user.user.surname);
@@ -115,4 +115,4 @@ const ProfileEdit = observer(() => {
   );
 });
 
-export default ProfileEdit;
+export default UserProfileEdit;

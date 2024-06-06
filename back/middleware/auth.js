@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
         if (!token) {
             throw ApiError.unauthorized('Token not provided');
         }
-  
+        
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         if (!decoded) {
             throw ApiError.unauthorized('Invalid token');
