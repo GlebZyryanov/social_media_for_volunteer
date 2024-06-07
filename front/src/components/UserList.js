@@ -11,7 +11,7 @@ const UserList = observer(() => {
   // }
   return (  
     <Row className="d-flex flex-column">
-      {user.users.map((user) => (
+      {user.filteredUsers.map((user) => (
         <UserItem key={user.user_id} user={user} />
       ))}
     </Row>

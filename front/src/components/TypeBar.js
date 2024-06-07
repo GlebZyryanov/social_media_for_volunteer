@@ -9,15 +9,15 @@ const TypeBar = observer(() => {
   const { event } = useContext(Context);
   const [activeType, setActiveType] = useState(null);
 
-  // const handleTypeClick = (type) => {
-  //   if (activeType && activeType.type.id === type.type.id) {
-  //     setActiveType(null);
-  //     event.setSelectedType(null);
-  //   } else {
-  //     setActiveType(type);
-  //     event.setSelectedType(type);
-  //   }
-  // };
+  const handleTypeClick = (type) => {
+    if (event.selectedType && event.selectedType.type_event_id === type.type_event_id) {
+      setActiveType(null);
+      event.setSelectedType(null);
+    } else {
+      setActiveType(type);
+      event.setSelectedType(type);
+    }
+  };
   
 
 
@@ -36,8 +36,9 @@ const TypeBar = observer(() => {
               transition: "transform 0.1s",
               transform: "scale(1)",
             }}
-            active={type.type_event_id === event.selectedType.type_event_id}
-            onClick={() => event.setSelectedType(type)}
+            active={type.type_event_id === event.selectedType?.type_event_id}
+            
+            onClick={() => handleTypeClick(type)}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = "scale(1.03)";
             }}

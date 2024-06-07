@@ -79,19 +79,27 @@ class ChatsController {
               model: User,
               as: "users",
               where: {
-                user_id: [userID, targetUserID],
+                user_id: userID,
               },
               through: {
-                attributes: [], 
+                attributes: [], // Исключаем атрибуты связи
+              },
+            },
+            {
+              model: User,
+              as: "users",
+              where: {
+                user_id: targetUserID,
+              },
+              through: {
+                attributes: [], // Исключаем атрибуты связи
               },
             },
           ],
         });
-  
         if (existingChat) {
-          return next(ApiError.conflict("Private chat already exists"));
+          return res.json(existingChat);
         }
-
         const user = await User.findByPk(userID);
         const targetUser = await User.findByPk(targetUserID);
   
@@ -103,6 +111,7 @@ class ChatsController {
   
         const chat = await Chat.create({
           name: chatName,
+          displayName: `Чат между Вами и ${targetUser.name}`, 
           chat_type: "PRIVATE",
           user_id: userID,
         });
@@ -135,12 +144,33 @@ class ChatsController {
         user_id: userID,
         chat_id: chatID,
       });
-
+      // Отправка сообщения через Socket.io
+      req.io.to(chatID).emit("message", message);
       res.status(201).json(message);
     } catch (error) {
       next(ApiError.internal("Failed to create message"));
     }
   }
+
+  async getChatMessages(req, res, next) {
+    try {
+        const { chatID } = req.params;
+        const messages = await Message.findAll({
+            where: { chat_id: chatID },
+            include: [
+                {
+                    model: User,
+                    attributes: ['name']
+                }
+            ],
+            order: [['createdAt', 'ASC']] // сортировка по времени создания
+        });
+
+        res.json(messages);
+    } catch (error) {
+        next(ApiError.internal("Failed to get messages"));
+    }
+}
 
   async leaveChat(req, res, next) {
     try {

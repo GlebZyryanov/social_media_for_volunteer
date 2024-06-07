@@ -4,7 +4,7 @@ import { Card, Image, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { CHATPAGE_ROUTE, UPDATEUSER_ROUTE } from "../utils/consts";
 
-const UserProfile = observer(({ user, currentUser }) => {
+const UserProfile = observer(({ user, currentUser,onMessageUser }) => {
   const navigate = useNavigate();
   const isCurrentUser = currentUser.user_id === user.user_id;
   console.log("userid", user.user_id);
@@ -48,7 +48,7 @@ const UserProfile = observer(({ user, currentUser }) => {
             navigate(
               isCurrentUser
                 ? UPDATEUSER_ROUTE + "/" + user.user_id
-                : CHATPAGE_ROUTE + "/" + user.user_id
+                : onMessageUser(user.user_id) //функция для создания чата
             )
           }
         >

@@ -11,7 +11,7 @@ const EventList = observer(() => {
 
   return (
     <Row className="d-flex flex-column">
-      {event.events.map((event) => (
+      {event.filteredEvents.map((event) => (
         <EventItem key={event.event_id} event={event} />
       ))}
     </Row>

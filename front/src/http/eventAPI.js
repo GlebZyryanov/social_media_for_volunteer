@@ -22,7 +22,7 @@ export const getEventByID = async (eventID) => {
   
   // Присоединение к мероприятию
   export const joinEvent = async (eventID) => {
-    const { data } = await $authHost.post(`api/events/${eventID}/join`);
+    const { data } = await $authHost.post(`api/events/join/${eventID}`);
     return data;
   };
 

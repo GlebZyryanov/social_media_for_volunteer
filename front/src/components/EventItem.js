@@ -26,7 +26,7 @@ const EventItem = ({ event }) => {
         <Card.Title>{event.name}</Card.Title>
         <Card.Text>{event.info}</Card.Text>
         <Card.Text>{event.address}</Card.Text>
-        <Card.Text>{event.expires_date}</Card.Text>
+        <Card.Text>{event.expires_date}</Card.Text>   
       </div>
     </Card>
   );

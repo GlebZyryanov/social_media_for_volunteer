@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getUserByID } from "../http/authAPI";
 import UserProfile from "../components/UserProfile";
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
+import { createPrivateChat } from "../http/chatAPI";
+import { CHATPAGE_ROUTE } from "../utils/consts";
 
 const UserPage = observer(() => {
   const { id } = useParams();
@@ -11,6 +13,7 @@ const UserPage = observer(() => {
   const { user: UserStore } = useContext(Context);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -26,6 +29,17 @@ const UserPage = observer(() => {
 
     fetchUser();
   }, [id]);
+  const handleCreateOrGetPrivateChat = async (targetUserID) => {
+    try {
+      const chat = await createPrivateChat(targetUserID);
+      
+      navigate(CHATPAGE_ROUTE + "/" + chat.chat_id);
+    } catch (error) {
+     
+      console.error("Failed to create or get private chat:", error);
+     
+    }
+  };
   const currentUser = UserStore.user;
   console.log("Fetching user with ID:", id);
   console.log("Current user from context:", currentUser);
@@ -34,7 +48,7 @@ const UserPage = observer(() => {
   }
 
   return userData ? (
-    <UserProfile user={userData} currentUser={currentUser} />
+    <UserProfile user={userData} currentUser={currentUser} onMessageUser={handleCreateOrGetPrivateChat}/>
   ) : (
     <div>User not found</div>
   );

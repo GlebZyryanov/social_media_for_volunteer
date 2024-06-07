@@ -30,4 +30,11 @@ export default class EventStore {
   get selectedType() {
     return this._selectedType;
   }
+
+  get filteredEvents() {
+    if (!this._selectedType || !this._selectedType.type_event_id) {
+      return this._events;
+    }
+    return this._events.filter(event => event.type_event_id === this._selectedType.type_event_id);
+  }
 }

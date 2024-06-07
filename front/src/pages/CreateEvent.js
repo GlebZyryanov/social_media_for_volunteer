@@ -45,10 +45,10 @@ const CreateEvent = observer(() => {
       <h2>Создание мероприятия</h2>
       <Form>
         <Form.Group controlId="formEventName">
-          <Form.Label>Event Name</Form.Label>
+          <Form.Label>Название мероприятия</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter event name"
+            placeholder="Введите название мероприятия"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -56,10 +56,10 @@ const CreateEvent = observer(() => {
         </Form.Group>
 
         <Form.Group controlId="formEventAddress">
-          <Form.Label>Event Address</Form.Label>
+          <Form.Label>Адрес мероприятия</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter event address"
+            placeholder="Введите адрес мероприятия"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
@@ -67,11 +67,11 @@ const CreateEvent = observer(() => {
         </Form.Group>
 
         <Form.Group controlId="formEventInfo">
-          <Form.Label>Event Info</Form.Label>
+          <Form.Label>Краткая информация</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}
-            placeholder="Enter event info"
+            placeholder="Краткая информация"
             value={info}
             onChange={(e) => setInfo(e.target.value)}
             required
@@ -79,7 +79,7 @@ const CreateEvent = observer(() => {
         </Form.Group>
 
         <Form.Group controlId="formEventExpiresDate">
-          <Form.Label>Event Expires Date</Form.Label>
+          <Form.Label>Дата проведения</Form.Label>
           <Form.Control
             type="date"
             value={expires_date}
@@ -89,7 +89,7 @@ const CreateEvent = observer(() => {
         </Form.Group>
 
         <Form.Group controlId="formEventType">
-          <Form.Label>Event Type</Form.Label>
+          <Form.Label>Тип мероприятия</Form.Label>
           <Form.Control
             as="select"
             value={type_event_id}
@@ -105,7 +105,7 @@ const CreateEvent = observer(() => {
         </Form.Group>
 
         <Form.Group controlId="formEventImage">
-          <Form.Label>Event Image</Form.Label>
+          <Form.Label>Изображение</Form.Label>
           <Form.Control
             type="file"
             onChange={(e) => setImagePath(e.target.files[0])}

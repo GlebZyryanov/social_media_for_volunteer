@@ -12,6 +12,8 @@ router.post('/:chatID',auth,ChatsController.createMessage) //роут созда
 
 router.put('/leave/:chatID',auth,ChatsController.leaveChat) //роут покидания группы
 
+router.get('/messages/:chatID', auth, ChatsController.getChatMessages);
+
 //router.delete('/:chatId',auth, ) //роут удаления чата -скорее всего удалять его не нужно с этим сложности, это потом
 
 module.exports = router;

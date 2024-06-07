@@ -34,6 +34,8 @@ class EventsController {
     }
   }
 
+  
+
   async getEventByID(req, res, next) {
     try {
       const { eventID } = req.params;
@@ -158,9 +160,7 @@ class EventsController {
         where: { user_id: userID, event_id: eventID }
       });
   
-      if (existingAttendance) {
-        return next(ApiError.conflict("User have already joined this event"));
-      }
+     
   
       // Присоединение пользователя к мероприятию
       await Attendance.create({ user_id: userID, event_id: eventID });
@@ -180,6 +180,9 @@ class EventsController {
         });
       } else {
         console.log("Group chat not found.");
+      } 
+      if (existingAttendance) {
+        return next(ApiError.conflict("User have already joined this event"));
       }
   
       // Уведомление автора мероприятия

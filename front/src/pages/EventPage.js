@@ -28,11 +28,11 @@ const EventPage = observer(() => {
 
   const handleJoinEvent = async () => {
     try {
-      //await joinEvent(id);
+      await joinEvent(id);
       alert("You have successfully joined the event!");
       // Optionally, refresh event data to reflect changes
-     // const data = await getEventByID(id);
-     // setEventData(data);
+     const data = await getEventByID(id);
+     setEventData(data);
     } catch (error) {
       console.error("Failed to join event:", error);
       alert("Failed to join the event.");

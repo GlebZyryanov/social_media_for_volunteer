@@ -8,8 +8,8 @@ const ChatList = observer(() => {
   const { chat } = useContext(Context);
   return (
     <Row className="d-flex flex-column">
-      {chat.chats.map((chat) => (
-        <ChatItem key={chat.chat_id} chat={chat} />
+      {chat.filteredChats.map((chat) => (
+        <ChatItem key={chat.id} chat={chat} />
       ))}
     </Row>
   );

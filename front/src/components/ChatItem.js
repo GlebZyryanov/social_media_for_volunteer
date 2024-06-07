@@ -8,7 +8,7 @@ const ChatItem = ({ chat }) => {
   return (
     <Card
       className="mt-2 d-flex flex-row align-items-center"
-      onClick={() => navigate(CHATPAGE_ROUTE + "/" + chat.id)}
+      onClick={() => navigate(CHATPAGE_ROUTE + "/" + chat.chat_id)}
       style={{ cursor: "pointer", width: "100%", padding: "10px" }}
       border="light"
     >
