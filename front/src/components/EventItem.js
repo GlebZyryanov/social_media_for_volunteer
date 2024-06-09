@@ -2,8 +2,9 @@ import React from "react";
 import { Card, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { EVENTPAGE_ROUTE } from "../utils/consts";
-
+import defaultImage from '../defaultImgStore/defaultimg.jpg';
 const EventItem = ({ event }) => {
+  
   const navigate = useNavigate();
   return (
     <Card
@@ -18,15 +19,15 @@ const EventItem = ({ event }) => {
         style={{ width: "40%", marginRight: "10px", height: "auto", maxHeight: "200px", backgroundSize: "content" }}
         onError={(e) => {
           e.target.onerror = null;
-          e.target.src =
-            "https://steamuserimages-a.akamaihd.net/ugc/1835802620427924961/F005E68A9567D2C1098172DA117A07F0A790EA45/?imw=512&amp;imh=365&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true";
+          e.target.src = defaultImage;
         }}
       />
       <div style={{ width: "60%" }}>
         <Card.Title>{event.name}</Card.Title>
         <Card.Text>{event.info}</Card.Text>
+        <Card.Text>{event.author}</Card.Text>
         <Card.Text>{event.address}</Card.Text>
-        <Card.Text>{event.expires_date}</Card.Text>   
+        <Card.Text>{new Date(event.expires_date).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Card.Text>   
       </div>
     </Card>
   );

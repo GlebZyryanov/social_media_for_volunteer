@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Context } from "../index";
+import { Context } from "../../index";
 import { useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
-import { createEvent, getAllTypesEvents,getAllEvents } from "../http/eventAPI"; 
+import { createEvent, getAllTypesEvents,getAllEvents } from "../../http/eventAPI"; 
 import { Form, Button, Container } from "react-bootstrap";
-import { ALLEVENTS_ROUTE } from "../utils/consts";
+import { ALLEVENTS_ROUTE } from "../../utils/consts";
 
 const CreateEvent = observer(() => {
   const { event } = useContext(Context);
@@ -13,12 +13,13 @@ const CreateEvent = observer(() => {
   const [address, setAddress] = useState("");
   const [info, setInfo] = useState("");
   const [expires_date, setExpiresDate] = useState("");
-  const [type_event_id, setTypeEventId] = useState("");
+  const [type_event_id, setTypeEventId] = useState(1);
   const [image_path, setImagePath] = useState(null);
-
+  
   useEffect(() => {
     getAllTypesEvents().then((data) => event.setTypes(data));
   }, [event]);
+  console.log("type_evnet_id", type_event_id);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +29,9 @@ const CreateEvent = observer(() => {
     formData.append("info", info);
     formData.append("expires_date", expires_date);
     formData.append("type_event_id", type_event_id);
-    formData.append("image_path", image_path);
+    if(image_path) {
+      formData.append("image_path", image_path);
+    }
 
     try {
       await createEvent(formData);

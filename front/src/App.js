@@ -10,6 +10,7 @@ import { Spinner } from "react-bootstrap";
 const App = observer(() => {
   const { user } = useContext(Context);
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,15 +30,18 @@ const App = observer(() => {
     };
 
     fetchUser();
+    
+   
   }, [user]);
 
   if (loading) {
     return <Spinner animation="grow" />; // Отображаем спиннер во время загрузки
   }
+  
 
   return (
     <BrowserRouter>
-      <NavBar />
+      <NavBar loading={loading} />
       <AppRouter />
     </BrowserRouter>
   );

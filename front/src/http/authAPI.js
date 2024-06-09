@@ -12,6 +12,11 @@ export const registration = async (name, email, password) => {
   return jwtDecode(data.token);
 };
 
+export const confirmEmail = async (token) => {
+  const { data } = await $host.get(`/user/confirm-email?token=${token}`);
+  return data;
+};
+
 // Авторизация пользователя
 export const login = async (email, password) => {
   const { data } = await $host.post("api/user/login", { email, password });
@@ -70,7 +75,7 @@ export const getUserByID = async (userID) => {
   
   // Повышение роли пользователя до администратора
   export const upgradeRole = async (userID, adminPassword) => {
-    const { data } = await $authHost.put(`api/user/${userID}/upgrade-role`, { admin_password: adminPassword });
+    const { data } = await $authHost.put(`api/user/upgrade-role/${userID}`, { admin_password: adminPassword });
     return data.user;
   };
 
@@ -94,3 +99,13 @@ export const getCurrentUser = async () => {
       return null;
     }
   };
+
+export const banUser = async (userID) => {
+  const { data } = await $authHost.put(`api/user/ban/${userID}`);
+  return data.user;
+};
+
+export const unbanUser = async (userID) => {
+  const { data } = await $authHost.put(`api/user/unban/${userID}`);
+  return data.user;
+}

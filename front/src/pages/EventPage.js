@@ -8,8 +8,10 @@ import { Context } from "../index";
 const EventPage = observer(() => {
   const { id } = useParams();
   const { user: UserStore } = useContext(Context);
+  const {user} = useContext(Context);
   const [eventData, setEventData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isBanned = user.user.isBanned;
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -28,11 +30,15 @@ const EventPage = observer(() => {
 
   const handleJoinEvent = async () => {
     try {
-      await joinEvent(id);
-      alert("You have successfully joined the event!");
-      // Optionally, refresh event data to reflect changes
-     const data = await getEventByID(id);
-     setEventData(data);
+      if (isBanned) {
+        alert("You have been banned.Now you cant create and join events");
+      } else {
+        const data = await getEventByID(id);
+        await joinEvent(id);
+        setEventData(data);
+        alert("You have successfully joined the event!");
+        
+      }
     } catch (error) {
       console.error("Failed to join event:", error);
       alert("Failed to join the event.");
@@ -46,7 +52,11 @@ const EventPage = observer(() => {
   }
 
   return eventData ? (
-    <EventProfile event={eventData} currentUser={currentUser} onJoin={handleJoinEvent} />
+    <EventProfile
+      event={eventData}
+      currentUser={currentUser}
+      onJoin={handleJoinEvent}
+    />
   ) : (
     <div>Event not found</div>
   );

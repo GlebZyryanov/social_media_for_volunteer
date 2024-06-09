@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import { Col, Container, Row } from "react-bootstrap";
 import TypeBar from "../components/TypeBar";
@@ -9,9 +9,11 @@ import { getAllTypesEvents, getAllEvents } from "../http/eventAPI";
 
 const AllEvents = () => {
   const { event } = useContext(Context);
-
+ 
+  
   useEffect(() => {
     getAllTypesEvents().then((data) => event.setTypes(data));
+    
   }, [event]);
 
   useEffect(() => {
@@ -26,8 +28,9 @@ const AllEvents = () => {
     };
 
     fetchEvents();
+    
   }, [event]);
-
+  
   return (
     <Container className="mt-3 ">
       <Row className="d-flex ">

@@ -20,6 +20,10 @@ export default class EventStore {
     this._selectedType = type;
   }
 
+  
+
+  
+
   get events() {
     return this._events;
   }

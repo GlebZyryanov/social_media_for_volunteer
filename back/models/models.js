@@ -1,7 +1,6 @@
 const sequelize = require("../db/db");
 const { DataTypes } = require("sequelize");
 
-//поля create_date и registered_date не нужны тк seuqelize добавляет поля createdAt и updatedAt по умолчанию
 
 // Модель User
 const User = sequelize.define(
@@ -54,6 +53,18 @@ const User = sequelize.define(
     admin_password: {
       type: DataTypes.STRING,
     },
+    isBanned: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isEmailConfirmed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    emailConfirmationToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     hooks: {
@@ -87,6 +98,7 @@ const Event = sequelize.define("event", {
   },
   image_path: {
     type: DataTypes.STRING,
+    allowNull: true,
   },
   expires_date: {
     type: DataTypes.DATE,

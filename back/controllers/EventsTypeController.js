@@ -1,6 +1,7 @@
 const {TypeEvent}  = require('../models/models')
 const ApiError = require('../error/ApiError')
 
+
 class EventsTypeController{
 
     async getAllTypesEvents(req, res,next){

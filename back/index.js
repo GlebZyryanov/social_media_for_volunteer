@@ -83,6 +83,8 @@ io.on("connection", (socket) => {
   });
 });
 
+
+
 //вызов обработчика ошибок должен идти в конце
 app.use(ErrorHandler);
 

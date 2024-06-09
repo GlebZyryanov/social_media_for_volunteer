@@ -7,32 +7,64 @@ const uuid = require("uuid");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const fs = require("fs");
-
+const { sendEmail } = require("../config/nodemailer");
 
 const generateJwt = (id, email) => {
-  return jwt.sign(
-      {id, email},
-      process.env.SECRET_KEY,
-      {expiresIn: '8000h'}
-  )
-}
+  return jwt.sign({ id, email }, process.env.SECRET_KEY, {
+    expiresIn: "8000h",
+  });
+};
 
 class UserController {
   async register(req, res, next) {
     try {
       const { name, email, password } = req.body;
-
+      // Проверяем, существует ли уже пользователь с таким email
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ message: "Пользователь с таким email уже существует" });
+      }
       const hashedPassword = await bcrypt.hash(password, 10);
+      const emailConfirmationToken = uuidv4();
       const user = await User.create({
         name,
         email,
         password: hashedPassword,
+        emailConfirmationToken,
       });
+      user.isActive = true;
+      user.isBanned = false;
+      await user.save();
 
+      const emailSubject = "Подтверждение почты";
+      const emailText = `Для подтверждения вашей почты перейдите по ссылке: ${process.env.FRONTEND_URL}/confirm-email?token=${emailConfirmationToken}`;
+      await sendEmail(user.email, emailSubject, emailText);
       const token = generateJwt(user.user_id, user.email);
       return res.json({ token, user });
     } catch (error) {
+      console.error("Registration error:", error);
       next(ApiError.internal("Failed to register")); // Возникла внутренняя ошибка сервера
+    }
+  }
+
+  async confirmEmail(req, res, next) {
+    try {
+      const { token } = req.query;
+      const user = await User.findOne({
+        where: { emailConfirmationToken: token },
+      });
+      if (!user) {
+        return next(ApiError.notFound("Invalid token"));
+      }
+      user.isEmailConfirmed = true;
+      user.emailConfirmationToken = null;
+      await user.save();
+      return res.json({ message: "Email confirmed successfully" });
+    } catch (error) {
+      console.error("Email confirmation error:", error);
+      next(ApiError.internal("Failed to confirm email"));
     }
   }
 
@@ -59,16 +91,16 @@ class UserController {
   async logout(req, res, next) {
     try {
       const { id } = req.user;
-  
+
       const user = await User.findByPk(id);
       if (!user) {
         return next(ApiError.notFound("User not found"));
       }
-  
+
       // Обновляем состояние isActive при выходе
       user.isActive = false;
       await user.save();
-  
+
       return res.json({ message: "Logout successful" });
     } catch (error) {
       next(ApiError.internal("Failed to logout"));
@@ -134,72 +166,11 @@ class UserController {
     }
   }
 
-  //тут тоже нужно пересмотреть немного - возможно удасться оптимизировать с помощью клиента
-  // async updateUser(req, res, next) {
-
-  //   // try {
-  //     const { userID } = req.params;
-  //     const { name, surname, email, phone, profile, password } =
-  //       req.body;
-
-  //     const user = await User.findByPk(userID);
-
-  //     if (!user) {
-  //       next(ApiError.notFound("User not found"));
-  //     }
-
-  //     if (password) {
-  //       user.password = await bcrypt.hash(password, 10);
-  //     }
-
-  //     user.name = name || user.name;
-  //     console.log(user.name)
-  //     console.log(name)
-  //     user.surname = surname || user.surname;
-  //     console.log(user.surname)
-  //     console.log(surname)
-  //     user.email = email || user.email;
-  //     console.log(user.email)
-  //     console.log(email)
-  //     user.phone = phone || user.phone;
-  //     console.log(user.phone)
-  //     console.log(phone)
-  //     user.profile = profile || user.profile;
-  //     console.log(user.profile)
-  //     console.log(profile)
-
-  //     if (req.files && req.files.image) {
-  //       const image = req.files.image;
-  //       const ext = path.extname(image.name);
-  //       if (ext !== '.jpg') {
-  //         return next(ApiError.badRequest("Only .jpg files are allowed"));
-  //       }
-
-  //       const image_name = uuid.v4() + ext;
-  //       const image_path = path.join(__dirname, '..', 'static', image_name);
-
-  //       // Ensure the uploads directory exists
-  //       fs.mkdirSync(path.dirname(image_path), { recursive: true });
-
-  //       // Move the file to the desired location
-  //       await image.mv(image_path);
-
-  //       user.image_path = image_name;
-  //       console.log(user.image_path)
-  //     }
-
-  //   await user.save();
-
-  //     return res.json({ user });
-  //   // } catch (error) {
-  //   //   next(ApiError.internal('Failed to update user'));
-  //   // }
-  // }
   async updateUser(req, res, next) {
     //позже оптимизировать и прикрутить ошибку при загрузке НЕ ЖПЕГА
     try {
       const { userID } = req.params;
-      const { name, surname, email, phone, profile, password } = req.body;
+      const { name, surname, phone, profile, password } = req.body;
       const { image_path } = req.files;
       const user = await User.findByPk(userID);
       if (!user) {
@@ -212,7 +183,6 @@ class UserController {
 
       user.name = name || user.name;
       user.surname = surname || user.surname;
-      user.email = email || user.email;
       user.phone = phone || user.phone;
       user.profile = profile || user.profile;
 
@@ -272,7 +242,8 @@ class UserController {
   async upgradeRole(req, res, next) {
     try {
       const { admin_password } = req.body;
-      const user = await User.findByPk(req.user.id);
+      const { userID } = req.params;
+      const user = await User.findByPk(userID);
 
       if (!user) {
         next(ApiError.notFound("User not found"));
@@ -290,6 +261,41 @@ class UserController {
       return res.json({ user });
     } catch (error) {
       next(ApiError.internal("Failed to upgrade role"));
+    }
+  }
+  async banUser(req, res, next) {
+    try {
+      const { userID } = req.params;
+      const user = await User.findByPk(userID);
+
+      if (!user) {
+        return next(ApiError.notFound("User not found"));
+      }
+
+      user.isBanned = true;
+      await user.save();
+
+      return res.json({ message: "User banned successfully", user });
+    } catch (error) {
+      next(ApiError.internal("Failed to ban user"));
+    }
+  }
+
+  async unbanUser(req, res, next) {
+    try {
+      const { userID } = req.params;
+      const user = await User.findByPk(userID);
+
+      if (!user) {
+        return next(ApiError.notFound("User not found"));
+      }
+
+      user.isBanned = false;
+      await user.save();
+
+      return res.json({ message: "User unbanned successfully", user });
+    } catch (error) {
+      next(ApiError.internal("Failed to unban user"));
     }
   }
 }

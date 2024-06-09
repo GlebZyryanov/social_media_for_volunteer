@@ -4,13 +4,12 @@ import AllEvents from "../pages/AllEvents";
 import AllUsers from "../pages/AllUsers";
 import Auth from "../pages/Auth";
 import ChatPage from "../pages/ChatPage";
-import CreateEvent from "../pages/CreateEvent";
+import CreateEvent from "./modals/CreateEvent";
 import EventPage from "../pages/EventPage";
-import UpdateEvent from "../pages/UpdateEvent";
+import UpdateEvent from "./modals/UpdateEvent";
 import UpgradeRole from "../pages/UpgradeRole";
 import UserPage from "../pages/UserPage";
 import ProtectedRoute from "../components/ProtectedRout";
-
 import {
   ADMIN_ROUTE,
   ALLCHATS_ROUTE,
@@ -27,8 +26,7 @@ import {
   USERPAGE_ROUTE,
 } from "../utils/consts";
 import { Route, Routes } from "react-router-dom";
-import UserProfileEdit from "../pages/UserProfileEdit";
-
+import UserProfileEdit from "./modals/UserProfileEdit";
 const AppRouter = () => (
   <Routes>
     <Route
@@ -38,6 +36,7 @@ const AppRouter = () => (
     <Route
       path={ALLEVENTS_ROUTE}
       element={<ProtectedRoute element={<AllEvents />} />}
+      
     />
     <Route
       path={ALLCHATS_ROUTE}

@@ -1,14 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Card, Image, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CHATPAGE_ROUTE, UPDATEUSER_ROUTE } from "../utils/consts";
+import { banUser, getUserByID, unbanUser } from "../http/authAPI";
+import defaultImage from '../defaultImgStore/defaultimg.jpg';
 
-const UserProfile = observer(({ user, currentUser,onMessageUser }) => {
+
+const UserProfile = observer(({ user, currentUser, onMessageUser }) => {
   const navigate = useNavigate();
   const isCurrentUser = currentUser.user_id === user.user_id;
+  const isAdministrator = currentUser.role;
+  const [isBanned, setIsBanned] = useState(user.isBanned);
+  
+  console.log("IsAdmin", isAdministrator);
   console.log("userid", user.user_id);
   console.log("currentuserid", currentUser.user_id);
+
+
+  const handleBanUser = async () => {
+    try {
+      await banUser(user.user_id);
+      setIsBanned(true);
+      //alert("User banned successfully");
+      
+    } catch (error) {
+      console.error("Failed to ban user", error);
+      alert("Failed to ban user");
+    }
+  };
+
+  const handleUnbanUser = async () => {
+    try {
+      await unbanUser(user.user_id);
+      //("User unbanned successfully");
+      setIsBanned(false)
+    } catch (error) {
+      console.error("Failed to unban user", error);
+      alert("Failed to unban user");
+    }
+  };
 
   return (
     <Card
@@ -28,8 +59,7 @@ const UserProfile = observer(({ user, currentUser,onMessageUser }) => {
           }}
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src =
-              "https://steamuserimages-a.akamaihd.net/ugc/1835802620427924961/F005E68A9567D2C1098172DA117A07F0A790EA45/?imw=512&amp;imh=365&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true";
+            e.target.src = defaultImage;
           }}
         />
         <div style={{ flex: 1, paddingLeft: "10px" }}>
@@ -39,6 +69,12 @@ const UserProfile = observer(({ user, currentUser,onMessageUser }) => {
           <Card.Text>{user.profile}</Card.Text>
           {user.phone && <Card.Text>Телефон: {user.phone}</Card.Text>}
           {user.email && <Card.Text>Email: {user.email}</Card.Text>}
+          {isAdministrator === "ADMIN" && (
+            <Card.Text>
+              Пароль для получения доступа к функциям администратора:{" "}
+              {user.admin_password}
+            </Card.Text>
+          )}
         </div>
       </div>
       <div style={{ width: "50%", marginTop: "10px" }}>
@@ -54,9 +90,17 @@ const UserProfile = observer(({ user, currentUser,onMessageUser }) => {
         >
           {isCurrentUser ? "Редактировать профиль" : "Написать сообщение"}
         </Button>
+        {isAdministrator === "ADMIN" && !isCurrentUser && (
+          <Button
+            variant={isBanned ? "warning" : "danger"}
+            onClick={isBanned? handleUnbanUser : handleBanUser}
+            style={{ marginLeft: "10px" }}
+          >
+            {isBanned ? "Разбанить" : "Забанить"}
+          </Button>
+        )}
       </div>
     </Card>
   );
 });
-
 export default UserProfile;

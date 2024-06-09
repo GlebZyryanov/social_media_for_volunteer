@@ -9,23 +9,28 @@ import {
   onMessageReceived,
   disconnectSocket,
 } from "../socket/socket";
-import axios from "axios";
-import { getChatMessages } from "../http/chatAPI";
+
+import { getChatByID, getChatMessages } from "../http/chatAPI";
 
 const ChatPage = () => {
   const { id } = useParams();
-  const { user } = useContext(Context);
-  const { chat } = useContext(Context);
+  const { user,chat  } = useContext(Context);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-
+  const [chatInfo, setChatInfo] = useState(null);
   
+  const loadChatInfo = async () => {
+    try {
+      const response = await getChatByID(id);
+      console.log("Chat info response:", response); // Логирование данных
+      setChatInfo(response);
+    } catch (error) {
+      console.error("Failed to load chat info:", error);
+    }
+  };
 
  useEffect(() => {
-    // Join the chat via socket.io
     joinChat(id);
-
-    // Load chat messages from the server
     const loadMessages = async () => {
       try {
         // const response = await axios.get(`${process.env.REACT_APP_API_URL}api/chats/messages/${id}`);
@@ -35,14 +40,11 @@ const ChatPage = () => {
         console.error("Failed to load messages:", error);
       }
     };
-
     loadMessages();
-
-    // Listen for new messages via socket.io
+    loadChatInfo();
     onMessageReceived((message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
-
     return () => {
       leaveChat(id);
       disconnectSocket();
@@ -67,7 +69,7 @@ console.log("messages",messages)
     <div>
       <Card>
         <Card.Body>
-          <Card.Title>Название чата - изменить позже чтобы добавлялось из названия чата с сервера</Card.Title>
+          <Card.Title>{chatInfo.displayName}</Card.Title>
           <div>
             {messages.map((message, index) => (
               <div key={index}>

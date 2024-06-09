@@ -2,6 +2,7 @@ const { Chat, Message, ChatUsers, User } = require("../models/models");
 const ApiError = require("../error/ApiError");
 require("express-async-errors");
 
+
 class ChatsController {
   async getAllChats(req, res, next) {
     try {
@@ -111,7 +112,7 @@ class ChatsController {
   
         const chat = await Chat.create({
           name: chatName,
-          displayName: `Чат между Вами и ${targetUser.name}`, 
+          displayName: `Чат между ${user.name} (${user.email}) и ${targetUser.name} (${targetUser.email})`, 
           chat_type: "PRIVATE",
           user_id: userID,
         });

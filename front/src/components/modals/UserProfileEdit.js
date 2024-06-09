@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 
 import { observer } from 'mobx-react-lite';
-import { Context } from '../index';
-import { updateUser } from '../http/authAPI';
+import { Context } from '../../index';
+import { updateUser } from '../../http/authAPI';
 import { useNavigate } from 'react-router-dom';
-import { USERPAGE_ROUTE } from '../utils/consts';
+import { USERPAGE_ROUTE } from '../../utils/consts';
 
 const UserProfileEdit = observer(() => {
   const { user } = useContext(Context);

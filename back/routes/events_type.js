@@ -5,6 +5,6 @@ const { auth} = require("../middleware/auth");
 
 router.post("/",auth,EventsTypeController.createTypeEvent);
 router.get("/",auth,EventsTypeController.getAllTypesEvents);
-router.delete("/",auth,EventsTypeController.deleteTypeEvent);
+router.delete("/:type_event_id", auth, EventsTypeController.deleteTypeEvent);
 
 module.exports = router;

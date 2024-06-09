@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Context } from "../index";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Button, Image } from "react-bootstrap";
+import { Button, Image, Spinner } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import {
   ADMIN_ROUTE,
@@ -20,23 +20,17 @@ import {
 } from "../utils/consts";
 import { getCurrentUser, login, logout } from "../http/authAPI";
 
-const NavBar = observer(() => {
-  const { user } = useContext(Context);
-  // console.log(user);
-  // console.log(user.user.name, user.user.image_path, user.isAuth);
-  // console.log("id", user.user.user_id);
-  // console.log("name", user.user.name);
-  // console.log("surname", user.user.surname);
-  // console.log("image", user.user.image_path);
-  // console.log("email", user.user.email);
-  // console.log("profile", user.user.profile);
-  // console.log("phone", user.user.phone);
-  // console.log("password", user.user.password);
-  // console.log("admin_password", user.user.admin_password);
-  // console.log("isActive", user.user.isActive);
-  // console.log("role", user.user.role);
+const NavBar = observer(({loading}) => {
+ const { user } = useContext(Context);
   const navigate = useNavigate();
   const location = useLocation();
+  const isBanned = user.user.isBanned;
+  
+
+  useEffect(() => {
+    
+     
+  }, [user.user]);
 
   const logOutUser = async () => {
     user.setUser({});
@@ -56,7 +50,9 @@ const NavBar = observer(() => {
   const isAuthRoute = [LOGIN_ROUTE, REGISTRATION_ROUTE].includes(
     location.pathname
   );
-
+  if (loading) {
+    return <Spinner animation="grow" />;
+  }
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
@@ -112,7 +108,7 @@ const NavBar = observer(() => {
                 <Button
                   variant="outline-light"
                   className="me-2"
-                  onClick={() => navigate(CREATEEVENT_ROUTE)}
+                  onClick={isBanned ? () => {alert("You have been banned.Now you cant create and join events")} : () => navigate(CREATEEVENT_ROUTE)}
                 >
                   Добавить мероприятие
                 </Button>
@@ -139,7 +135,7 @@ const NavBar = observer(() => {
                 </Button>
               </Nav>
               <Nav>
-                {user.role === "ADMIN" ? (
+                {user.user.role === "ADMIN" ? (
                   <Button
                     variant="outline-light"
                     className="me-2"
@@ -151,7 +147,7 @@ const NavBar = observer(() => {
                   <Button
                     variant="outline-light"
                     className="me-2"
-                    onClick={() => navigate(UPGRADEROLE_ROUTE)}
+                    onClick={() => navigate(`${UPGRADEROLE_ROUTE}/${user.user.user_id}`)}
                   >
                     Апгрейд Роли
                   </Button>

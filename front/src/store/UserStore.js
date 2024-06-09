@@ -16,6 +16,7 @@ export default class UserStore {
       role: "",
       password: "",
       admin_password: "",
+      isBanned:false,
     };
     this._users = [];
     this._searchQuery = ""; // Новое состояние для строки поиска

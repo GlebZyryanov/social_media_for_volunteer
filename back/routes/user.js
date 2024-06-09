@@ -12,8 +12,10 @@ router.get("/", auth, UserController.getAllUsers); //роут получения
 router.get("/:userID", auth, UserController.getUserByID); //роут вывода одного пользователя (его профиля) (Протестировано)
 router.put("/update/:userID", auth,UserController.updateUser); //роут изменения профиля пользователя(можно и пароль будет изменить)
 router.get("/admin", auth, authAdmin, UserController.getAllUsersAdmin); //роут получения всех пользователей админом(с более чувствительной информации
-router.put("/:userID/admin", auth, authAdmin, UserController.getUserByIDAdmin); //роут получения чувствительной информации о пользователе (например админ пароль)
-router.put("/:userID/upgrade-role", auth, UserController.upgradeRole); //роут повышения роли пользователя до админа
+router.put("/admin/:userID", auth, authAdmin, UserController.getUserByIDAdmin); //роут получения чувствительной информации о пользователе (например админ пароль)
+router.put("/upgrade-role/:userID", auth, UserController.upgradeRole); //роут повышения роли пользователя до админа
+router.put('/ban/:userID', auth, UserController.banUser);
+router.put('/unban/:userID', auth,  UserController.unbanUser);
+router.get('/confirm-email', UserController.confirmEmail);
 
-//далее будут еще роутинги для бана пользователей админами либо для бана ивентов админами(в роуте ивент)
 module.exports = router;

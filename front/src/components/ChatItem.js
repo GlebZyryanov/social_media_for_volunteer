@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CHATPAGE_ROUTE } from "../utils/consts";
 
 const ChatItem = ({ chat }) => {
+  
   const navigate = useNavigate();
   return (
     <Card
