@@ -2,17 +2,12 @@ const express = require("express"); //получаем класс роутера
 const UserController = require("../controllers/UserController");
 const { auth, authAdmin } = require("../middleware/auth");
 const router = express.Router();
-router.get("/check", auth, UserController.check);
-router.get("/find_people", auth, UserController.findPeople); // Маршрут для поиска пользователей (Протестировано)
-router.post("/register", UserController.register); //роуты регистрации авторизации обычного пользователя (Протестировано)
+router.post("/register", UserController.register); //роуты регистрации авторизации обычного пользователя
 router.post("/login", UserController.login); //(Протестировано)
 router.post("/logout", auth, UserController.logout);
-router.get("/role", auth, UserController.getUserRole); // маршрут для получения роли пользователя
-router.get("/", auth, UserController.getAllUsers); //роут получения всех пользователей юзером (Протестировано)
-router.get("/:userID", auth, UserController.getUserByID); //роут вывода одного пользователя (его профиля) (Протестировано)
-router.put("/update/:userID", auth,UserController.updateUser); //роут изменения профиля пользователя(можно и пароль будет изменить)
-router.get("/admin", auth, authAdmin, UserController.getAllUsersAdmin); //роут получения всех пользователей админом(с более чувствительной информации
-router.put("/admin/:userID", auth, authAdmin, UserController.getUserByIDAdmin); //роут получения чувствительной информации о пользователе (например админ пароль)
+router.get("/", auth, UserController.getAllUsers); //роут получения всех пользователей юзером
+router.get("/:userID", auth, UserController.getUserByID); //роут вывода одного пользователя (его профиля)
+router.put("/update/:userID", auth,UserController.updateUser); //роут изменения профиля пользователя
 router.put("/upgrade-role/:userID", auth, UserController.upgradeRole); //роут повышения роли пользователя до админа
 router.put('/ban/:userID', auth, UserController.banUser);
 router.put('/unban/:userID', auth,  UserController.unbanUser);

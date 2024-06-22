@@ -117,7 +117,7 @@ const CreateEvent = observer(() => {
         </Form.Group>
 
         <Button variant="primary" type="submit" onClick={handleSubmit}>
-          Create Event
+          Создать
         </Button>
       </Form>
     </Container>

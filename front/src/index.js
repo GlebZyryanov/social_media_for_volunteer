@@ -18,11 +18,8 @@ root.render(
     <Context.Provider
       value={{
         user: new UserStore(),
-        message: new MessageStore(),
         event: new EventStore(),
         chat: new ChatStore(),
-        chat_users: new ChatUsersStore(),
-        attandance: new AttendanceStore(),
       }}
     >
       <App />

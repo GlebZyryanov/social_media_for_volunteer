@@ -26,7 +26,7 @@ const UserProfileEdit = observer(() => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('surname', surname);
-    formData.append('email', email);
+    //formData.append('email', email);
     formData.append('profile', profile);
     formData.append('phone', phone);
     formData.append('password', password);
@@ -71,6 +71,7 @@ const UserProfileEdit = observer(() => {
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
+            disabled={true}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

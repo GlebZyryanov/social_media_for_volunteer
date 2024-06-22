@@ -79,7 +79,7 @@ const Admin = observer(() => {
                 onChange={(e) => setTypeName(e.target.value)}
               />
             </Form.Group>
-            <Button variant="success" onClick={handleCreateType}>
+            <Button variant="success" onClick={handleCreateType} className="mt-2">
               Создать тип
             </Button>
             

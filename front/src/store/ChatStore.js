@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-//тут стор где происходит управление состоянием чата
+
 export default class ChatStore {
   constructor() {
     this._chats = [];
@@ -24,7 +24,6 @@ export default class ChatStore {
   }
 
   get filteredChats() {
-    // Метод для фильтрации мероприятий
     const query = this._searchQuery.toLowerCase();
     if (!query || query === "") {
       return this._chats;

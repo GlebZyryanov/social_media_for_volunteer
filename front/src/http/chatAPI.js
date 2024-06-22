@@ -17,12 +17,12 @@ export const createPrivateChat = async (targetUserID) => {
   const { data } = await $authHost.post('api/chats/private', { targetUserID });
   return data;
 };
-
-// Отправка сообщения в чат
-export const sendMessage = async (chatID, message_text) => {
-  const { data } = await $authHost.post(`api/chats/${chatID}`, { message_text });
-  return data;
-};
+//
+// // Отправка сообщения в чат
+// export const sendMessage = async (chatID, message_text) => {
+//   const { data } = await $authHost.post(`api/chats/${chatID}`, { message_text });
+//   return data;
+// };
 
 // Покидание чата
 export const leaveChat = async (chatID) => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { upgradeRole } from '../http/authAPI';
 import { observer } from 'mobx-react-lite';
+import {Button, Card, Container, Form} from "react-bootstrap";
 
 const UpgradeRole = observer(() => {
   const { id } = useParams(); // Извлечение userID из параметров URL
@@ -23,20 +24,28 @@ const UpgradeRole = observer(() => {
   };
 
   return (
-    <div>
-      <div>
-      <h2>Повышение роли до администратора</h2>
-      <input
-        type="password"
-        placeholder="Введите admin_password"
-        value={adminPassword}
-        onChange={(e) => setAdminPassword(e.target.value)}
-      />
-      <button onClick={handleUpgradeRole}>Повысить роль</button>
+    <Container className="d-flex justify-content-center align-items-center"
+               style={{ height: window.innerHeight - 85 }}>
+      <Card style={{ width: 600, fontFamily: "Montserrat" }} className="p-5">
+      <Card.Text>Повышение роли до администратора</Card.Text>
+      <Form>
+        <Form.Group controlId="formAdminPassword">
+
+          <Form.Control
+            type="password"
+            placeholder="admin_password"
+            value={adminPassword}
+            onChange={(e) => setAdminPassword(e.target.value)}
+          />
+        </Form.Group>
+      </Form>
+      <Button  className="mt-3 align-self-center "
+               variant="outline-success"
+               style={{ fontFamily: "Montserrat" }} onClick={handleUpgradeRole}>Повысить роль</Button>
       {error && <div style={{ color: "red" }}>{error}</div>}
       {success && <div style={{ color: "green" }}>{success}</div>}
-    </div>
-    </div>
+    </Card>
+    </Container>
   );
 });
 

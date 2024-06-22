@@ -1,7 +1,5 @@
 const sequelize = require("../db/db");
 const { DataTypes } = require("sequelize");
-
-
 // Модель User
 const User = sequelize.define(
   "user",
@@ -89,10 +87,6 @@ const Event = sequelize.define("event", {
   address: {
     type: DataTypes.STRING,
   },
-  // create_date: {
-  //   type: DataTypes.DATE,
-  //   allowNull: false,
-  // },
   info: {
     type: DataTypes.TEXT,
   },
@@ -235,33 +229,23 @@ Event.belongsToMany(User, {
   foreignKey: "event_id",
   otherKey: "user_id",
 });
-
 User.hasMany(Notifications);
 Notifications.belongsTo(User);
-
-Event.hasMany(Notifications); //целесообразность этой связи следует проверить позже
+Event.hasMany(Notifications);
 Notifications.belongsTo(Event);
-
 TypeEvent.hasMany(Event, { foreignKey: 'type_event_id', as: 'events' });
 Event.belongsTo(TypeEvent, { foreignKey: 'type_event_id', as: 'typeEvent' });
-
 User.belongsToMany(Chat, { through: ChatUsers, foreignKey: 'user_id', as: 'chats' });
 Chat.belongsToMany(User, { through: ChatUsers, foreignKey: 'chat_id', as: 'users' });
-
 User.hasMany(Message, { foreignKey: 'user_id' });
 Message.belongsTo(User, { foreignKey: 'user_id' });
-
-//когда юзер создатель чата!!!Вомзожно удалить тк функционал реализовал через добавление author_id в ивент
 User.hasMany(Chat, { foreignKey: 'user_id' });
 Chat.belongsTo(User, { foreignKey: 'user_id' });
-
 Chat.hasMany(Message, { foreignKey: 'chat_id' });
 Message.belongsTo(Chat, { foreignKey: 'chat_id' });
-
 function generateAdminPassword() {
   return Math.random().toString(36).slice(-8); // Генерация случайного пароля из 8 символов
 }
-
 module.exports = {
   User,
   Event,

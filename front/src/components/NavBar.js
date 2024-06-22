@@ -19,6 +19,7 @@ import {
   REGISTRATION_ROUTE,
 } from "../utils/consts";
 import { getCurrentUser, login, logout } from "../http/authAPI";
+import defaultImage from '../defaultImgStore/defaultimg.jpg';
 
 const NavBar = observer(({loading}) => {
  const { user } = useContext(Context);
@@ -92,8 +93,7 @@ const NavBar = observer(({loading}) => {
                 className="me-2"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src =
-                    "https://steamuserimages-a.akamaihd.net/ugc/1835802620427924961/F005E68A9567D2C1098172DA117A07F0A790EA45/?imw=512&amp;imh=365&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true";
+                  e.target.src =defaultImage
                 }}
               />
               {user.user.name}

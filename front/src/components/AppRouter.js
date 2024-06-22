@@ -11,19 +11,19 @@ import UpgradeRole from "../pages/UpgradeRole";
 import UserPage from "../pages/UserPage";
 import ProtectedRoute from "../components/ProtectedRout";
 import {
-  ADMIN_ROUTE,
-  ALLCHATS_ROUTE,
-  ALLEVENTS_ROUTE,
-  ALLUSERS_ROUTE,
-  CHATPAGE_ROUTE,
-  CREATEEVENT_ROUTE,
-  EVENTPAGE_ROUTE,
-  LOGIN_ROUTE,
-  REGISTRATION_ROUTE,
-  UPDATEEVENT_ROUTE,
-  UPDATEUSER_ROUTE,
-  UPGRADEROLE_ROUTE,
-  USERPAGE_ROUTE,
+    ADMIN_ROUTE,
+    ALLCHATS_ROUTE,
+    ALLEVENTS_ROUTE,
+    ALLUSERS_ROUTE,
+    CHATPAGE_ROUTE,
+    CREATEEVENT_ROUTE, DEFAULT_ROUTE,
+    EVENTPAGE_ROUTE,
+    LOGIN_ROUTE,
+    REGISTRATION_ROUTE,
+    UPDATEEVENT_ROUTE,
+    UPDATEUSER_ROUTE,
+    UPGRADEROLE_ROUTE,
+    USERPAGE_ROUTE,
 } from "../utils/consts";
 import { Route, Routes } from "react-router-dom";
 import UserProfileEdit from "./modals/UserProfileEdit";
@@ -75,8 +75,8 @@ const AppRouter = () => (
       element={<ProtectedRoute element={<UpgradeRole />} />}
     />
     <Route path={LOGIN_ROUTE} element={<Auth />} />
+      <Route path={DEFAULT_ROUTE} element={<Auth />} />
     <Route path={REGISTRATION_ROUTE} element={<Auth />} />
   </Routes>
 );
-
 export default AppRouter;

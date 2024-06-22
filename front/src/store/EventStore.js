@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-//тут стор где происходит управление состоянием мероприятий
+
 export default class EventStore {
   constructor() {
     this._events = [];

@@ -18,10 +18,6 @@ const auth = async (req, res, next) => {
         if (!user) {
             throw ApiError.unauthorized('Account not found');
         }
-  
-        // if (!user.isActive) {
-        //     throw ApiError.forbidden('Account is inactive');
-        // }
         console.log('User found:', user); // Логирование найденного пользователя
 
         req.user = decoded;

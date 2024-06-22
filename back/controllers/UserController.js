@@ -45,7 +45,7 @@ class UserController {
       return res.json({ token, user });
     } catch (error) {
       console.error("Registration error:", error);
-      next(ApiError.internal("Failed to register")); // Возникла внутренняя ошибка сервера
+      next(ApiError.internal("Failed to register"));
     }
   }
 
@@ -107,21 +107,8 @@ class UserController {
     }
   }
 
-  async getUserRole(req, res, next) {
-    try {
-      if (!req.user || !req.user.role) {
-        throw ApiError.forbidden("User role not provided");
-      }
 
-      return res.status(200).json({ role: req.user.role });
-    } catch (error) {
-      next(error);
-    }
-  }
-  async check(req, res, next) {
-    const token = generateJwt(req.user.user_id, req.user.email);
-    return res.json({ token });
-  }
+
 
   async getAllUsers(req, res, next) {
     try {
@@ -144,25 +131,6 @@ class UserController {
       return res.json({ user });
     } catch (error) {
       next(ApiError.internal("Failed to get user"));
-    }
-  }
-
-  async findPeople(req, res, next) {
-    //разобраться с этим чуть позже понять как оптимизировать
-    try {
-      const { query } = req.query;
-      const users = await User.findAll({
-        where: {
-          [Sequelize.Op.or]: [
-            { name: { [Sequelize.Op.like]: `%${query}%` } },
-            { surname: { [Sequelize.Op.like]: `%${query}%` } },
-            { email: { [Sequelize.Op.like]: `%${query}%` } }, // Добавляем поиск по email
-          ],
-        },
-      });
-      return res.json({ users });
-    } catch (error) {
-      next(ApiError.internal("Failed to find people"));
     }
   }
 
@@ -203,39 +171,6 @@ class UserController {
       return res.json({ user });
     } catch (error) {
       next(ApiError.internal("Failed to update user"));
-    }
-  }
-
-  async getAllUsersAdmin(req, res, next) {
-    //позже добавить функционал, пока тоже самое что и у обычного юзера
-    try {
-      const users = await User.findAll();
-      return res.json({ users });
-    } catch (error) {
-      next(ApiError.internal("Failed to get users"));
-    }
-  }
-
-  async getUserByIDAdmin(req, res, next) {
-    try {
-      const { userID } = req.params;
-      const user = await User.findByPk(userID, {
-        attributes: { exclude: ["password"] }, // Исключаем поле пароля из результатов запроса
-        raw: true, // Получаем чистый объект без экземпляра модели Sequelize
-      });
-
-      if (!user) {
-        next(ApiError.notFound("User not found"));
-      }
-
-      if (req.user.role !== "ADMIN") {
-        next(ApiError.forbidden("Access denied (admin only)"));
-      }
-
-      // Возвращаем админу информацию, включая admin_password пользователя
-      return res.json({ user });
-    } catch (error) {
-      next(ApiError.internal("Failed to get user"));
     }
   }
 
