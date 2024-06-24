@@ -1,14 +1,14 @@
 require("dotenv").config();
 const express = require("express");
-const sequelize = require("./db/db");
+const sequelize = require("../db/db");
 const cors = require("cors");
-const router = require("./routes/index");
+const router = require("../routes");
 const fileUpload = require("express-fileupload");
-const ErrorHandler = require("./middleware/ErrorHandler");
+const ErrorHandler = require("../middleware/ErrorHandler");
 const http = require("http"); // добавлено для создания сервера
 const { Server } = require("socket.io"); // импортируем Server из socket.io
 const path = require("path");
-const { Message, User } = require("./models/models");
+const { Message, User } = require("../models/models");
 
 //настройка порта и вызов сервера
 const PORT = process.env.PORT || 5000;
